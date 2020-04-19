@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QMediaPlaylist>
+#include <QMenu>
 #include <QTime>
 #include <QUrl>
 
@@ -10,6 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    createActions();
+    createTrayIcon();
+    setIcon();
+    connect(trayIcon, &QSystemTrayIcon::activated,
+            this, &MainWindow::iconActivated);
+    trayIcon->show();
+
     ui->setupUi(this);
 
     delayTimer = new QTimer(this);
@@ -63,6 +71,13 @@ MainWindow::~MainWindow()
     delete player;
     delete statusLabel;
     delete ui;
+    delete minimizeAction;
+//    delete maximizeAction;
+    delete restoreAction;
+    delete stopAction;
+    delete quitAction;
+    delete trayIconMenu;
+    delete trayIcon;
 }
 
 void MainWindow::on_pbStart_clicked()
@@ -103,4 +118,66 @@ void MainWindow::on_pbStop_clicked()
 void MainWindow::on_lnEd_returnPressed()
 {
     MainWindow::on_pbStart_clicked();
+}
+
+void MainWindow::setIcon()
+{
+    QIcon icon(":/images/stopwatch.png");
+    trayIcon->setIcon(icon);
+    setWindowIcon(icon);
+    //    trayIcon->setToolTip(iconComboBox->itemText(index));
+}
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:
+        // this is single click
+//        qDebug().noquote() << "trigger";
+        QMainWindow::showNormal();
+        break;
+    case QSystemTrayIcon::DoubleClick:
+//        qDebug().noquote() << "dbl clicked";
+        QMainWindow::hide();
+//        iconComboBox->setCurrentIndex((iconComboBox->currentIndex() + 1) % iconComboBox->count());
+        break;
+    case QSystemTrayIcon::MiddleClick:
+//        showMessage();
+        break;
+    default:
+        ;
+    }
+}
+
+void MainWindow::createActions()
+{
+    minimizeAction = new QAction(tr("Mi&nimize"), this);
+    connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
+
+//    maximizeAction = new QAction(tr("Ma&ximize"), this);
+//    connect(maximizeAction, &QAction::triggered, this, &QMainWindow::showMaximized);
+
+    restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, &QAction::triggered, this, &QMainWindow::showNormal);
+
+    stopAction = new QAction(tr("&Stop Alarm"), this);
+    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbStop_clicked);
+
+    quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+}
+
+void MainWindow::createTrayIcon()
+{
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(minimizeAction);
+//    trayIconMenu->addAction(maximizeAction);
+    trayIconMenu->addAction(restoreAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(stopAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(trayIconMenu);
 }
