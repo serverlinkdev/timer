@@ -49,6 +49,7 @@ private slots:
     // system tray items
     void setIcon();
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    void messageClicked();
 };
 
 #endif // MAINWINDOW_H

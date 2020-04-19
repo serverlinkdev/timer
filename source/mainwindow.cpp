@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setIcon();
     connect(trayIcon, &QSystemTrayIcon::activated,
             this, &MainWindow::iconActivated);
+    connect(trayIcon, &QSystemTrayIcon::messageClicked,
+            this, &MainWindow::messageClicked);
     trayIcon->show();
 
     ui->setupUi(this);
@@ -96,6 +98,9 @@ void MainWindow::on_pbStart_clicked()
     setWindowTitle(laterShort + " Timer ends");
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
+    QIcon icon(":/images/stopwatch.png");
+    const QString msg = "Timer ends at ~ " + laterShort;
+    trayIcon->showMessage("Timer", msg, icon,1000);
 }
 
 void MainWindow::slotDelayTimer()
@@ -103,6 +108,9 @@ void MainWindow::slotDelayTimer()
     statusLabel->setText("Timer Expired!");
     setWindowTitle("Timer Expired!");
     player->play();
+    QIcon icon(":/images/stopwatch.png");
+    const QString msg = "Timer has expired!";
+    trayIcon->showMessage("Timer", msg, icon,1000);
 }
 
 void MainWindow::on_pbStop_clicked()
@@ -147,6 +155,12 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     default:
         ;
     }
+}
+
+void MainWindow::messageClicked()
+{
+   on_pbStop_clicked();
+   showNormal();
 }
 
 void MainWindow::createActions()
