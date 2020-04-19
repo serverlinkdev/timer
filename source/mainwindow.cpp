@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDateTime>
 #include <QDebug>
+#include <QIntValidator>
 #include <QMediaPlaylist>
 #include <QMenu>
 #include <QTime>
@@ -64,6 +65,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Why oh why is this not recognized in Designers CSS !!!
     ui->lnEd->setFrame(false);
+
+    // we'll allow a timer for a full week's worth of minutes
+    ui->lnEd->setValidator(new QIntValidator(1,10080, this));
 
     ui->pbStop->setDisabled(true);
 }
@@ -158,6 +162,11 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+// NOTE: MS Windows requires that if the pop up is activated, and a user
+// interacts with the system tray icon, this function must be called.
+// So, if the pop up activates, and user clicks on tray icon this will fire
+// no matter what.  If this is an issue, you will neeed to override the
+// behavior, or perhaps do some validation with an internal variable.
 void MainWindow::messageClicked()
 {
    on_pbStop_clicked();
