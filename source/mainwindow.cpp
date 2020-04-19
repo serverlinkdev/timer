@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, &MainWindow::iconActivated);
     connect(trayIcon, &QSystemTrayIcon::messageClicked,
             this, &MainWindow::messageClicked);
+    trayIcon->setToolTip("Not running a timer");
     trayIcon->show();
 
     ui->setupUi(this);
@@ -102,6 +103,7 @@ void MainWindow::on_pbStart_clicked()
     const QString laterShort=later.toString("hh:mm");
     statusLabel->setText("Timer ends ~ " + laterShort + " ");
     setWindowTitle(laterShort + " Timer ends");
+    trayIcon->setToolTip("Timer ends ~ " + laterShort + " ");
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
     stopAction->setDisabled(false);
@@ -111,6 +113,7 @@ void MainWindow::slotDelayTimer()
 {
     statusLabel->setText("Timer Expired!");
     setWindowTitle("Timer Expired!");
+    trayIcon->setToolTip("Timer Expired!");
     player->play();
     QIcon icon(":/images/stopwatch.png");
     const QString msg = "Timer has expired!";
@@ -126,6 +129,7 @@ void MainWindow::on_pbStop_clicked()
     ui->pbStart->setDisabled(false);
     ui->pbStop->setDisabled(true);
     stopAction->setDisabled(true);
+    trayIcon->setToolTip("Not running a timer");
 }
 
 void MainWindow::on_lnEd_returnPressed()
