@@ -98,9 +98,6 @@ void MainWindow::on_pbStart_clicked()
     setWindowTitle(laterShort + " Timer ends");
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
-    QIcon icon(":/images/stopwatch.png");
-    const QString msg = "Timer ends at ~ " + laterShort;
-    trayIcon->showMessage("Timer", msg, icon,1000);
 }
 
 void MainWindow::slotDelayTimer()
