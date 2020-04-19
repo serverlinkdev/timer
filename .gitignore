@@ -1,0 +1,12 @@
+!gradle-wrapper.jar
+*.iml
+*.log
+.DS_Store
+.gradle
+.idea/
+.idea_modules/
+/out/
+build/
+hs_err_pid*
+keystore.jks
+*.pro.user

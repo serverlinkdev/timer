@@ -18,13 +18,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     playlist = new QMediaPlaylist();
-    playlist->addMedia(QUrl("qrc:/sound/pop-with-silence.wav"));
+    playlist->addMedia(QUrl("qrc:/sound/pop.wav"));
     playlist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(playlist);
 
     statusLabel = new QLabel(this);
     QFont f = statusLabel->font();
-    f.setPointSize(14);
+    f.setPointSize(12);
     statusLabel->setFont(f);
 
     // add them to the statusbar:
@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Disable resize of the mainwindow
     setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
-    setFixedSize(200,150);
+    setFixedSize(177,180);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // Remove the triangle on bottom right of window that cues user they can resize
@@ -52,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Why oh why is this not recognized in Designers CSS !!!
     ui->lnEd->setFrame(false);
+
+    ui->pbStop->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -77,6 +79,8 @@ void MainWindow::on_pbStart_clicked()
     const QString laterShort=later.toString("hh:mm");
     statusLabel->setText("Timer ends ~ " + laterShort + " ");
     setWindowTitle(laterShort + " Timer ends");
+    ui->pbStop->setDisabled(false);
+    ui->pbStart->setDisabled(true);
 }
 
 void MainWindow::slotDelayTimer()
@@ -92,6 +96,8 @@ void MainWindow::on_pbStop_clicked()
     delayTimer->stop();
     statusLabel->setText("Not Running");
     setWindowTitle("Timer");
+    ui->pbStart->setDisabled(false);
+    ui->pbStop->setDisabled(true);
 }
 
 void MainWindow::on_lnEd_returnPressed()

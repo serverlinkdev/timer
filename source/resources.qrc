@@ -1,8 +1,7 @@
 <RCC>
-    <qresource prefix="/sound">
-        <file>pop-with-silence.wav</file>
-    </qresource>
-    <qresource prefix="/images">
-        <file>stopwatch.png</file>
+    <qresource prefix="/">
+        <file>images/stopwatch.png</file>
+        <file>sound/pop.wav</file>
+        <file>stopwatch.ico</file>
     </qresource>
 </RCC>
