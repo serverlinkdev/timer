@@ -2,8 +2,20 @@
 
 ![](screenshot.png)
 
+![](screenshot-notification.png)
+
 A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.
 
+## Features:
+- Rapid entry!  Just open timer, type a number and hit enter to start.
+- Runs from your system tray and stays out of your way.
+- Full system tray support for GNU/Linux and MS Windows supporting:
+  - minimize to tray
+  - restore from tray
+  - cancel alarm from tray
+  - quit timer application
+- System notifications that allow users to cancel the alarm from the notification center of their OS.
+- Start / Stop buttons change colors when have focus
 
 ## Installation:
 
