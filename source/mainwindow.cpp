@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     createActions();
+    // on start up, no timer running
+    stopAction->setDisabled(true);
     createTrayIcon();
     setIcon();
     connect(trayIcon, &QSystemTrayIcon::activated,
@@ -98,6 +100,7 @@ void MainWindow::on_pbStart_clicked()
     setWindowTitle(laterShort + " Timer ends");
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
+    stopAction->setDisabled(false);
 }
 
 void MainWindow::slotDelayTimer()
@@ -118,6 +121,7 @@ void MainWindow::on_pbStop_clicked()
     setWindowTitle("Timer");
     ui->pbStart->setDisabled(false);
     ui->pbStop->setDisabled(true);
+    stopAction->setDisabled(true);
 }
 
 void MainWindow::on_lnEd_returnPressed()
