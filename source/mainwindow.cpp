@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     player->setPlaylist(playlist);
 
     ui->setupUi(this);
-    ui->lblStatus->setText("Habouji ! ");
+    ui->lblStatus->setText("Habouji!");
     ui->pbStop->setDisabled(true);
 
     auto icon = ":/images/stopwatch.png";
