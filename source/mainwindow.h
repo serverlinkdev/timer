@@ -38,6 +38,8 @@ private:
     QSystemTrayIcon *trayIcon = nullptr;
     QMenu *trayIconMenu = nullptr;
 
+    void showAndSetActive();
+    
 private slots:
     void slotDelayTimer();
 

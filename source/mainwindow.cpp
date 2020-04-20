@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
     // and also disable resizing the window
-    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
     setFixedSize(177,280);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
@@ -148,15 +148,31 @@ void MainWindow::setIcon()
     setWindowIcon(icon);
 }
 
+void MainWindow::showAndSetActive()
+{
+    QMainWindow::showNormal();
+    QMainWindow::raise();
+    QMainWindow::activateWindow();
+}
+
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
     case QSystemTrayIcon::Trigger:
         // this is single click
-        QMainWindow::showNormal();
+
+        if (isHidden())
+        {
+            showAndSetActive();
+        }
+        else
+        {
+            QMainWindow::hide();
+        }
+
         break;
     case QSystemTrayIcon::DoubleClick:
-        QMainWindow::hide();
+//        QMainWindow::hide();
         break;
     case QSystemTrayIcon::MiddleClick:
         break;
@@ -182,7 +198,8 @@ void MainWindow::createActions()
     connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
 
     restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, &QAction::triggered, this, &QMainWindow::showNormal);
+    connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
+//    connect(restoreAction, &QAction::triggered, this, &QMainWindow::showNormal);
 
     stopAction = new QAction(tr("&Stop Alarm"), this);
     connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbStop_clicked);
