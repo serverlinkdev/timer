@@ -39,7 +39,7 @@ private:
     QMenu *trayIconMenu = nullptr;
 
     void showAndSetActive();
-    
+
 private slots:
     void slotDelayTimer();
 
@@ -47,7 +47,7 @@ private slots:
     void on_pbStop_clicked();
     void on_lnEd_returnPressed();
 
-    void setIcon();
+    void setIcon(QIcon icon);
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void messageClicked();
 

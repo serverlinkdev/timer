@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createActions();
     stopAction->setDisabled(true);
     createTrayIcon();
-    setIcon();
+    QIcon iconDef(":/images/stopwatch.png");
+    setIcon(iconDef);
     connect(trayIcon, &QSystemTrayIcon::activated,
             this, &MainWindow::iconActivated);
     connect(trayIcon, &QSystemTrayIcon::messageClicked,
@@ -100,6 +101,9 @@ void MainWindow::on_pbStart_clicked()
     QString userMessage = ui->txtEdMsg->toPlainText();
     if (userMessage.length()==0) userMessage = "";
     trayIcon->setToolTip(userMessage + " - Timer ends ~ " + laterShort);
+    QIcon iconRun(":/images/stopwatch-running");
+    setIcon(iconRun);
+
 
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
@@ -114,11 +118,12 @@ void MainWindow::slotDelayTimer()
     trayIcon->setToolTip(msg);
     player->play();
 
-    QIcon icon(":/images/stopwatch.png");
+    QIcon iconExpired(":/images/stopwatch-expired.png");
+    setIcon(iconExpired);
 
     QString userMessage = ui->txtEdMsg->toPlainText();
     if (userMessage.length()==0) userMessage = "";
-    trayIcon->showMessage(msg, userMessage, icon, 2000);
+    trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
 }
 
 void MainWindow::on_pbStop_clicked()
@@ -134,6 +139,8 @@ void MainWindow::on_pbStop_clicked()
     trayIcon->setToolTip(msg);
     ui->lnEd->setReadOnly(false);
     ui->txtEdMsg->setReadOnly(false);
+    QIcon iconDef(":/images/stopwatch.png");
+    setIcon(iconDef);
 }
 
 void MainWindow::on_lnEd_returnPressed()
@@ -141,9 +148,8 @@ void MainWindow::on_lnEd_returnPressed()
     ui->txtEdMsg->setFocus();
 }
 
-void MainWindow::setIcon()
+void MainWindow::setIcon(QIcon icon)
 {
-    QIcon icon(":/images/stopwatch.png");
     trayIcon->setIcon(icon);
     setWindowIcon(icon);
 }
@@ -189,7 +195,8 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::messageClicked()
 {
    on_pbStop_clicked();
-   showNormal();
+//   showNormal();
+   showAndSetActive();
 }
 
 void MainWindow::createActions()
