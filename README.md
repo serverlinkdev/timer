@@ -6,32 +6,33 @@
 
 ![](screenshot-tooltip.png)
 
-A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.3 released on 4/20/20.
 
 ## Features:
-- Rapid entry!  
++ Rapid entry!  
 
   Just open timer:
-	1. type a number for minutes
-	2. press enter to advance to message field
-	3. type your message (optional)
-	4. press enter to start the timer
+	1. Type a number for minutes
+	2. Press enter to advance to message field
+	3. Type your message (optional)
+	4. Press enter to start the timer
 	
-- Full system tray support for GNU/Linux and MS Windows supporting:
-  - close program window minimize to tray
-  - double click minimize to tray
-  - single click restore from tray
-  - cancel alarm from tray
-  - quit timer from tray
-  - tooltip's to easily identify a timer from multiple instances.
-- System notifications that shows your custom message and allow users to cancel the alarm from the notification.
-- Start / Stop buttons change colors when have focus
++ Full system tray support for GNU/Linux and MS Windows supporting:
+  - Close program window minimizes to tray
+  - Single click minimizes AND restores from tray
+  - Cancel alarm from tray
+  - Quit timer from tray
+  - Tooltip on tray icon to easily identify a timer from multiple instances.
+  - Tray icon changes color to green when running, and red when timer has expired.
+ 
++ System notifications that shows your custom message and allow you to cancel the alarm from the notification.
++ Start / Stop buttons change colors when hovering
 
 ## Installation:
 
 ### Windows:
 1. Install the official Microsoft Redistributable C++ for Windows 64 bit 2015,2017 and 2019 from (https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads).  Here is a direct link to their exe: [vc_redist.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)
-2. Download the timer from the releases folder here.
+2. Download the timer zip and asc signature files from the releases folder here.
 3. Place zip file anywhere you want
 4. Verify signature (optional) * see how to below
 5. Unzip
@@ -52,7 +53,7 @@ C:\Documents and Settings\<username>\Start Menu\Programs\Your Application
 1. GNU/Linux users: Easiest way is to open the pro file with QtCreator and run the build.  Be sure to set the build to 'release' so you your binary will be smaller.  This will auto build a shared library binary, so you only need the file 'timer' and put it anywhere on your system.  You'll probably be happiest if it's in your ~/bin directory.
 
 ### Bugs:
-report to the email address shown in section below.
+Report to the email address shown in section below.
 
 ## To verify the release signature:
 
