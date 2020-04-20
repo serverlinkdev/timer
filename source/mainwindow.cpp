@@ -108,28 +108,30 @@ void MainWindow::on_pbStart_clicked()
 
 void MainWindow::slotDelayTimer()
 {
-    ui->lblStatus->setText("Timer Expired!");
-    setWindowTitle("Timer Expired!");
-    trayIcon->setToolTip("Timer Expired!");
+    const QString msg = "Timer Expired!";
+    ui->lblStatus->setText(msg);
+    setWindowTitle(msg);
+    trayIcon->setToolTip(msg);
     player->play();
 
     QIcon icon(":/images/stopwatch.png");
 
     QString userMessage = ui->txtEdMsg->toPlainText();
     if (userMessage.length()==0) userMessage = "";
-    trayIcon->showMessage("Timer has expired!", userMessage, icon, 2000);
+    trayIcon->showMessage(msg, userMessage, icon, 2000);
 }
 
 void MainWindow::on_pbStop_clicked()
 {
     player->stop();
     delayTimer->stop();
-    ui->lblStatus->setText("Not Running");
+    const QString msg = "Not running a timer";
+    ui->lblStatus->setText(msg);
     setWindowTitle("Timer");
     ui->pbStart->setDisabled(false);
     ui->pbStop->setDisabled(true);
     stopAction->setDisabled(true);
-    trayIcon->setToolTip("Not running a timer");
+    trayIcon->setToolTip(msg);
     ui->lnEd->setReadOnly(false);
     ui->txtEdMsg->setReadOnly(false);
 }
