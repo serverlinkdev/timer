@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDateTime>
 #include <QDebug>
+#include <QEvent>
 #include <QIntValidator>
 #include <QMediaPlaylist>
 #include <QMenu>
@@ -13,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     createActions();
-    // on start up, no timer running
     stopAction->setDisabled(true);
     createTrayIcon();
     setIcon();
@@ -23,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
             this, &MainWindow::messageClicked);
     trayIcon->setToolTip("Not running a timer");
     trayIcon->show();
-
-    ui->setupUi(this);
 
     delayTimer = new QTimer(this);
     connect(delayTimer, &QTimer::timeout,
@@ -36,41 +34,34 @@ MainWindow::MainWindow(QWidget *parent) :
     playlist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(playlist);
 
-    statusLabel = new QLabel(this);
-    QFont f = statusLabel->font();
-    f.setPointSize(12);
-    statusLabel->setFont(f);
+    ui->setupUi(this);
+    ui->lblStatus->setText("Habouji ! ");
+    ui->pbStop->setDisabled(true);
 
-    // add them to the statusbar:
-    ui->statusBar->addPermanentWidget(statusLabel);
-    statusLabel->setText("Habouji ! ");
     auto icon = ":/images/stopwatch.png";
     setWindowIcon(QIcon(icon));
 
     // Sadly when put into the CSS in designer, it won't alow modifying
     // the QlineEdit, which that too completely ignores the CSS in desginer
     // The CSS in Qt is broken !!!!
-    QPalette pThis = this->palette();
-    pThis.setColor(QPalette::Window, QColor(54,57,63));
-    this->setPalette(pThis);
-
-    ui->lnEd->setStyleSheet("background-color:QColor(33,33,33)");
-
-    // Disable resize of the mainwindow
-    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
-    setFixedSize(177,180);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-
-    // Remove the triangle on bottom right of window that cues user they can resize
-    ui->statusBar->setSizeGripEnabled(false);
-
-    // Why oh why is this not recognized in Designers CSS !!!
-    ui->lnEd->setFrame(false);
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor(54,57,63));
+    this->setPalette(palette);
 
     // we'll allow a timer for a full week's worth of minutes
     ui->lnEd->setValidator(new QIntValidator(1,10080, this));
+    ui->lnEd->setStyleSheet("background-color:QColor(33,33,33)");
 
-    ui->pbStop->setDisabled(true);
+    ui->txtEdMsg->setStyleSheet("background-color:QColor(33,33,33)");
+
+    // text edits do not have a return key press event, so we'll make our own:
+    ui->txtEdMsg->installEventFilter(this);
+
+    // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
+    // and also disable resizing the window
+    setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
+    setFixedSize(177,280);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
 MainWindow::~MainWindow()
@@ -78,10 +69,8 @@ MainWindow::~MainWindow()
     delete delayTimer;
     delete playlist;
     delete player;
-    delete statusLabel;
     delete ui;
     delete minimizeAction;
-//    delete maximizeAction;
     delete restoreAction;
     delete stopAction;
     delete quitAction;
@@ -92,18 +81,26 @@ MainWindow::~MainWindow()
 void MainWindow::on_pbStart_clicked()
 {
     if (delayTimer->isActive()) return;
+
+    ui->lnEd->setReadOnly(true);
     const int val = ui->lnEd->text().toInt();
     if (val==0) return;
     const int delay = val * 60000;
     delayTimer->setSingleShot(true);
     delayTimer->start(delay);
+
     const QTime now = QTime::currentTime();
     const QString nowShort = now.toString("hh:mm");
     const QTime later = now.addSecs(val*60);
     const QString laterShort=later.toString("hh:mm");
-    statusLabel->setText("Timer ends ~ " + laterShort + " ");
+    ui->lblStatus->setText("Timer ends ~ " + laterShort + " ");
     setWindowTitle(laterShort + " Timer ends");
-    trayIcon->setToolTip("Timer ends ~ " + laterShort + " ");
+
+    ui->txtEdMsg->setReadOnly(true);
+    QString userMessage = ui->txtEdMsg->toPlainText();
+    if (userMessage.length()==0) userMessage = "";
+    trayIcon->setToolTip(userMessage + " - Timer ends ~ " + laterShort);
+
     ui->pbStop->setDisabled(false);
     ui->pbStart->setDisabled(true);
     stopAction->setDisabled(false);
@@ -111,30 +108,35 @@ void MainWindow::on_pbStart_clicked()
 
 void MainWindow::slotDelayTimer()
 {
-    statusLabel->setText("Timer Expired!");
+    ui->lblStatus->setText("Timer Expired!");
     setWindowTitle("Timer Expired!");
     trayIcon->setToolTip("Timer Expired!");
     player->play();
+
     QIcon icon(":/images/stopwatch.png");
-    const QString msg = "Timer has expired!";
-    trayIcon->showMessage("Timer", msg, icon,1000);
+
+    QString userMessage = ui->txtEdMsg->toPlainText();
+    if (userMessage.length()==0) userMessage = "";
+    trayIcon->showMessage("Timer has expired!", userMessage, icon, 2000);
 }
 
 void MainWindow::on_pbStop_clicked()
 {
     player->stop();
     delayTimer->stop();
-    statusLabel->setText("Not Running");
+    ui->lblStatus->setText("Not Running");
     setWindowTitle("Timer");
     ui->pbStart->setDisabled(false);
     ui->pbStop->setDisabled(true);
     stopAction->setDisabled(true);
     trayIcon->setToolTip("Not running a timer");
+    ui->lnEd->setReadOnly(false);
+    ui->txtEdMsg->setReadOnly(false);
 }
 
 void MainWindow::on_lnEd_returnPressed()
 {
-    MainWindow::on_pbStart_clicked();
+    ui->txtEdMsg->setFocus();
 }
 
 void MainWindow::setIcon()
@@ -142,7 +144,6 @@ void MainWindow::setIcon()
     QIcon icon(":/images/stopwatch.png");
     trayIcon->setIcon(icon);
     setWindowIcon(icon);
-    //    trayIcon->setToolTip(iconComboBox->itemText(index));
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -150,16 +151,12 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason) {
     case QSystemTrayIcon::Trigger:
         // this is single click
-//        qDebug().noquote() << "trigger";
         QMainWindow::showNormal();
         break;
     case QSystemTrayIcon::DoubleClick:
-//        qDebug().noquote() << "dbl clicked";
         QMainWindow::hide();
-//        iconComboBox->setCurrentIndex((iconComboBox->currentIndex() + 1) % iconComboBox->count());
         break;
     case QSystemTrayIcon::MiddleClick:
-//        showMessage();
         break;
     default:
         ;
@@ -182,9 +179,6 @@ void MainWindow::createActions()
     minimizeAction = new QAction(tr("Mi&nimize"), this);
     connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
 
-//    maximizeAction = new QAction(tr("Ma&ximize"), this);
-//    connect(maximizeAction, &QAction::triggered, this, &QMainWindow::showMaximized);
-
     restoreAction = new QAction(tr("&Restore"), this);
     connect(restoreAction, &QAction::triggered, this, &QMainWindow::showNormal);
 
@@ -199,7 +193,6 @@ void MainWindow::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(minimizeAction);
-//    trayIconMenu->addAction(maximizeAction);
     trayIconMenu->addAction(restoreAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(stopAction);
@@ -208,4 +201,21 @@ void MainWindow::createTrayIcon()
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
+}
+
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if ((watched==ui->txtEdMsg) && (event->type()==QEvent::KeyPress))
+    {
+        if ((static_cast<QKeyEvent *>(event)->key()==Qt::Key_Return) ||
+                (static_cast<QKeyEvent *>(event)->key()==Qt::Key_Enter))
+        {
+            on_pbStart_clicked(); // Run the Timer on enter key Press!
+            event->accept();
+            return true;
+        }
+    }
+    // return Qt's default implementation:
+    return QMainWindow::eventFilter(watched, event);
 }
