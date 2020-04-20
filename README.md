@@ -4,17 +4,27 @@
 
 ![](screenshot-notification.png)
 
+![](screenshot-tooltip.png)
+
 A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.
 
 ## Features:
-- Rapid entry!  Just open timer, type a number and hit enter to start.
-- Runs from your system tray and stays out of your way.
+- Rapid entry!  
+
+  Just open timer:
+	1. type a number for minutes
+	2. press enter to advance to message field
+	3. type your message (optional)
+	4. press enter to start the timer
+	
 - Full system tray support for GNU/Linux and MS Windows supporting:
-  - minimize to tray
-  - restore from tray
+  - close program window minimize to tray
+  - double click minimize to tray
+  - single click restore from tray
   - cancel alarm from tray
-  - quit timer application
-- System notifications that allow users to cancel the alarm from the notification center of their OS.
+  - quit timer from tray
+  - tooltip's to easily identify a timer from multiple instances.
+- System notifications that shows your custom message and allow users to cancel the alarm from the notification.
 - Start / Stop buttons change colors when have focus
 
 ## Installation:
@@ -29,7 +39,7 @@ A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Op
 
 Don't forget you can right click the timer.exe to pin it to start menu, or taskbar, or put shortcut on your desktop.
 
-Also, you can place a shortcut timer.exe in your Start Menu with:
+Also, you can place a shortcut to timer.exe in your Start Menu with:
 
 ```
 C:\Documents and Settings\<username>\Start Menu\Programs\Your Application
