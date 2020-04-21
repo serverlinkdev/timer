@@ -18,6 +18,7 @@ A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Op
 	4. Press enter to start the timer
 	
 + Full system tray support for GNU/Linux and MS Windows supporting:
+  - Start button becomes Stop button when timer is activated and vice versa.
   - Close program window minimizes to tray
   - Single click minimizes AND restores from tray
   - Cancel alarm from tray
