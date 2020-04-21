@@ -215,7 +215,7 @@ color: white;
        <number>42</number>
       </property>
       <item>
-       <widget class="QPushButton" name="pbStart">
+       <widget class="QPushButton" name="pbAction">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>

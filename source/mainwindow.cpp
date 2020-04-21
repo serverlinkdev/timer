@@ -11,7 +11,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    isRunning(false)
 {
     createActions();
     stopAction->setDisabled(true);
@@ -79,10 +80,11 @@ MainWindow::~MainWindow()
     delete trayIcon;
 }
 
-void MainWindow::on_pbStart_clicked()
+void MainWindow::on_pbAction_clicked()
 {
-    if (!delayTimer->isActive())
+    if ((!delayTimer->isActive()) && !isRunning) // start
     {
+        isRunning=true;
         const int val = ui->lnEd->text().toInt();
         if (val==0) return;
         ui->lnEd->setReadOnly(true);
@@ -105,12 +107,13 @@ void MainWindow::on_pbStart_clicked()
         setIcon(iconRun);
 
         setButtonHoverColor(red);
-        ui->pbStart->setText("Stop");
+        ui->pbAction->setText("Stop");
 
         stopAction->setDisabled(false);
     }
-    else
+    else // stop
     {
+        isRunning=false;
         player->stop();
         delayTimer->stop();
 
@@ -120,7 +123,7 @@ void MainWindow::on_pbStart_clicked()
         setWindowTitle("Timer");
 
         setButtonHoverColor(green);
-        ui->pbStart->setText("Start");
+        ui->pbAction->setText("Start");
 
         stopAction->setDisabled(true);
 
@@ -187,7 +190,7 @@ void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
             "background-color: red;"
             "}";
 
-    ui->pbStart->setStyleSheet(cssButton);
+    ui->pbAction->setStyleSheet(cssButton);
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -219,7 +222,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 // behavior, or perhaps do some validation with an internal variable.
 void MainWindow::messageClicked()
 {
-   on_pbStart_clicked();
+   on_pbAction_clicked();
    showAndSetActive();
 }
 
@@ -232,7 +235,7 @@ void MainWindow::createActions()
     connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
 
     stopAction = new QAction(tr("&Stop Alarm"), this);
-    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbStart_clicked);
+    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbAction_clicked);
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
@@ -260,7 +263,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
         if ((static_cast<QKeyEvent *>(event)->key()==Qt::Key_Return) ||
                 (static_cast<QKeyEvent *>(event)->key()==Qt::Key_Enter))
         {
-            on_pbStart_clicked(); // Run the Timer on enter key Press!
+            on_pbAction_clicked(); // Run the Timer on enter key Press!
             event->accept();
             return true;
         }

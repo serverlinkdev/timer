@@ -25,6 +25,7 @@ private:
     enum ButtonColor { green, red };
 
     bool eventFilter(QObject *watched, QEvent *event) override;
+    bool isRunning;
     Ui::MainWindow *ui=nullptr;
     QTimer *delayTimer=nullptr;
     QMediaPlaylist *playlist = nullptr;
@@ -46,7 +47,7 @@ private:
 private slots:
     void slotDelayTimer();
 
-    void on_pbStart_clicked();
+    void on_pbAction_clicked();
 //    void on_pbStop_clicked();
     void on_lnEd_returnPressed();
 
