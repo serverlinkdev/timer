@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     ui->lblStatus->setText("Habouji!");
-    ui->pbStop->setDisabled(true);
+    setButtonHoverColor(green);
 
     auto icon = ":/images/stopwatch.png";
     setWindowIcon(QIcon(icon));
@@ -81,33 +81,58 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pbStart_clicked()
 {
-    if (delayTimer->isActive()) return;
+    if (!delayTimer->isActive())
+    {
+        const int val = ui->lnEd->text().toInt();
+        if (val==0) return;
+        ui->lnEd->setReadOnly(true);
+        const int delay = val * 60000;
+        delayTimer->setSingleShot(true);
+        delayTimer->start(delay);
 
-    ui->lnEd->setReadOnly(true);
-    const int val = ui->lnEd->text().toInt();
-    if (val==0) return;
-    const int delay = val * 60000;
-    delayTimer->setSingleShot(true);
-    delayTimer->start(delay);
+        const QTime now = QTime::currentTime();
+        const QString nowShort = now.toString("hh:mm");
+        const QTime later = now.addSecs(val*60);
+        const QString laterShort=later.toString("hh:mm");
+        ui->lblStatus->setText("Timer ends ~ " + laterShort + " ");
+        setWindowTitle(laterShort + " Timer ends");
 
-    const QTime now = QTime::currentTime();
-    const QString nowShort = now.toString("hh:mm");
-    const QTime later = now.addSecs(val*60);
-    const QString laterShort=later.toString("hh:mm");
-    ui->lblStatus->setText("Timer ends ~ " + laterShort + " ");
-    setWindowTitle(laterShort + " Timer ends");
+        ui->txtEdMsg->setReadOnly(true);
+        QString userMessage = ui->txtEdMsg->toPlainText();
+        if (userMessage.length()==0) userMessage = "";
+        trayIcon->setToolTip(userMessage + " - Timer ends ~ " + laterShort);
+        QIcon iconRun(":/images/stopwatch-running");
+        setIcon(iconRun);
 
-    ui->txtEdMsg->setReadOnly(true);
-    QString userMessage = ui->txtEdMsg->toPlainText();
-    if (userMessage.length()==0) userMessage = "";
-    trayIcon->setToolTip(userMessage + " - Timer ends ~ " + laterShort);
-    QIcon iconRun(":/images/stopwatch-running");
-    setIcon(iconRun);
+        setButtonHoverColor(red);
+        ui->pbStart->setText("Stop");
 
+        stopAction->setDisabled(false);
+    }
+    else
+    {
+        player->stop();
+        delayTimer->stop();
 
-    ui->pbStop->setDisabled(false);
-    ui->pbStart->setDisabled(true);
-    stopAction->setDisabled(false);
+        const QString msg = "Not running a timer";
+        ui->lblStatus->setText(msg);
+
+        setWindowTitle("Timer");
+
+        setButtonHoverColor(green);
+        ui->pbStart->setText("Start");
+
+        stopAction->setDisabled(true);
+
+        trayIcon->setToolTip(msg);
+
+        ui->lnEd->setReadOnly(false);
+
+        ui->txtEdMsg->setReadOnly(false);
+
+        QIcon iconDef(":/images/stopwatch.png");
+        setIcon(iconDef);
+    }
 }
 
 void MainWindow::slotDelayTimer()
@@ -116,6 +141,7 @@ void MainWindow::slotDelayTimer()
     ui->lblStatus->setText(msg);
     setWindowTitle(msg);
     trayIcon->setToolTip(msg);
+
     player->play();
 
     QIcon iconExpired(":/images/stopwatch-expired.png");
@@ -126,22 +152,7 @@ void MainWindow::slotDelayTimer()
     trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
 }
 
-void MainWindow::on_pbStop_clicked()
-{
-    player->stop();
-    delayTimer->stop();
-    const QString msg = "Not running a timer";
-    ui->lblStatus->setText(msg);
-    setWindowTitle("Timer");
-    ui->pbStart->setDisabled(false);
-    ui->pbStop->setDisabled(true);
-    stopAction->setDisabled(true);
-    trayIcon->setToolTip(msg);
-    ui->lnEd->setReadOnly(false);
-    ui->txtEdMsg->setReadOnly(false);
-    QIcon iconDef(":/images/stopwatch.png");
-    setIcon(iconDef);
-}
+
 
 void MainWindow::on_lnEd_returnPressed()
 {
@@ -161,12 +172,28 @@ void MainWindow::showAndSetActive()
     QMainWindow::activateWindow();
 }
 
+void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
+{
+    QString cssButton;
+
+    (color == green) ?
+        cssButton =
+            "QPushButton:hover {"
+            "background-color: green;"
+            "}"
+        :
+        cssButton =
+            "QPushButton:hover {"
+            "background-color: red;"
+            "}";
+
+    ui->pbStart->setStyleSheet(cssButton);
+}
+
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
     case QSystemTrayIcon::Trigger:
-        // this is single click
-
         if (isHidden())
         {
             showAndSetActive();
@@ -175,10 +202,8 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
         {
             QMainWindow::hide();
         }
-
         break;
     case QSystemTrayIcon::DoubleClick:
-//        QMainWindow::hide();
         break;
     case QSystemTrayIcon::MiddleClick:
         break;
@@ -194,8 +219,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 // behavior, or perhaps do some validation with an internal variable.
 void MainWindow::messageClicked()
 {
-   on_pbStop_clicked();
-//   showNormal();
+   on_pbStart_clicked();
    showAndSetActive();
 }
 
@@ -206,10 +230,9 @@ void MainWindow::createActions()
 
     restoreAction = new QAction(tr("&Restore"), this);
     connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
-//    connect(restoreAction, &QAction::triggered, this, &QMainWindow::showNormal);
 
     stopAction = new QAction(tr("&Stop Alarm"), this);
-    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbStop_clicked);
+    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbStart_clicked);
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);

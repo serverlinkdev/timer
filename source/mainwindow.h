@@ -22,6 +22,8 @@ public:
     ~MainWindow();
 
 private:
+    enum ButtonColor { green, red };
+
     bool eventFilter(QObject *watched, QEvent *event) override;
     Ui::MainWindow *ui=nullptr;
     QTimer *delayTimer=nullptr;
@@ -39,12 +41,13 @@ private:
     QMenu *trayIconMenu = nullptr;
 
     void showAndSetActive();
+    void setButtonHoverColor(ButtonColor color);
 
 private slots:
     void slotDelayTimer();
 
     void on_pbStart_clicked();
-    void on_pbStop_clicked();
+//    void on_pbStop_clicked();
     void on_lnEd_returnPressed();
 
     void setIcon(QIcon icon);
