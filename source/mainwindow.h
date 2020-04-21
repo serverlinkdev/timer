@@ -25,11 +25,12 @@ private:
     enum ButtonColor { green, red };
 
     bool eventFilter(QObject *watched, QEvent *event) override;
-    bool isRunning;
     Ui::MainWindow *ui=nullptr;
+    bool isRunning;
+
     QTimer *delayTimer=nullptr;
-    QMediaPlaylist *playlist = nullptr;
     QMediaPlayer *player=nullptr;
+    QMediaPlaylist *playlist = nullptr;
 
     void createActions();
     QAction *minimizeAction = nullptr;
@@ -38,17 +39,16 @@ private:
     QAction *quitAction = nullptr;
 
     void createTrayIcon();
-    QSystemTrayIcon *trayIcon = nullptr;
     QMenu *trayIconMenu = nullptr;
+    QSystemTrayIcon *trayIcon = nullptr;
 
-    void showAndSetActive();
     void setButtonHoverColor(ButtonColor color);
+    void showAndSetActive();
 
 private slots:
     void slotDelayTimer();
 
     void on_pbAction_clicked();
-//    void on_pbStop_clicked();
     void on_lnEd_returnPressed();
 
     void setIcon(QIcon icon);

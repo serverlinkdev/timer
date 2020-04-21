@@ -66,18 +66,64 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
-MainWindow::~MainWindow()
+void MainWindow::createActions()
 {
-    delete delayTimer;
-    delete playlist;
-    delete player;
-    delete ui;
-    delete minimizeAction;
-    delete restoreAction;
-    delete stopAction;
-    delete quitAction;
-    delete trayIconMenu;
-    delete trayIcon;
+    minimizeAction = new QAction(tr("Mi&nimize"), this);
+    connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
+
+    restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
+
+    stopAction = new QAction(tr("&Stop Alarm"), this);
+    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbAction_clicked);
+
+    quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+}
+
+void MainWindow::createTrayIcon()
+{
+    trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(minimizeAction);
+    trayIconMenu->addAction(restoreAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(stopAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(quitAction);
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(trayIconMenu);
+}
+
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if ((watched==ui->txtEdMsg) && (event->type()==QEvent::KeyPress))
+    {
+        if ((static_cast<QKeyEvent *>(event)->key()==Qt::Key_Return) ||
+                (static_cast<QKeyEvent *>(event)->key()==Qt::Key_Enter))
+        {
+            on_pbAction_clicked(); // Run the Timer on enter key Press!
+            event->accept();
+            return true;
+        }
+    }
+    // return Qt's default implementation:
+    return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
+{
+    switch (reason) {
+    case QSystemTrayIcon::Trigger:
+        (isHidden()) ? showAndSetActive() : QMainWindow::hide();
+        break;
+    case QSystemTrayIcon::DoubleClick:
+        break;
+    case QSystemTrayIcon::MiddleClick:
+        break;
+    default:
+        ;
+    }
 }
 
 void MainWindow::on_pbAction_clicked()
@@ -138,43 +184,6 @@ void MainWindow::on_pbAction_clicked()
     }
 }
 
-void MainWindow::slotDelayTimer()
-{
-    const QString msg = "Timer Expired!";
-    ui->lblStatus->setText(msg);
-    setWindowTitle(msg);
-    trayIcon->setToolTip(msg);
-
-    player->play();
-
-    QIcon iconExpired(":/images/stopwatch-expired.png");
-    setIcon(iconExpired);
-
-    QString userMessage = ui->txtEdMsg->toPlainText();
-    if (userMessage.length()==0) userMessage = "";
-    trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
-}
-
-
-
-void MainWindow::on_lnEd_returnPressed()
-{
-    ui->txtEdMsg->setFocus();
-}
-
-void MainWindow::setIcon(QIcon icon)
-{
-    trayIcon->setIcon(icon);
-    setWindowIcon(icon);
-}
-
-void MainWindow::showAndSetActive()
-{
-    QMainWindow::showNormal();
-    QMainWindow::raise();
-    QMainWindow::activateWindow();
-}
-
 void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
 {
     QString cssButton;
@@ -193,26 +202,39 @@ void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
     ui->pbAction->setStyleSheet(cssButton);
 }
 
-void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
+void MainWindow::setIcon(QIcon icon)
 {
-    switch (reason) {
-    case QSystemTrayIcon::Trigger:
-        if (isHidden())
-        {
-            showAndSetActive();
-        }
-        else
-        {
-            QMainWindow::hide();
-        }
-        break;
-    case QSystemTrayIcon::DoubleClick:
-        break;
-    case QSystemTrayIcon::MiddleClick:
-        break;
-    default:
-        ;
-    }
+    trayIcon->setIcon(icon);
+    setWindowIcon(icon);
+}
+
+void MainWindow::showAndSetActive()
+{
+    QMainWindow::showNormal();
+    QMainWindow::raise();
+    QMainWindow::activateWindow();
+}
+
+void MainWindow::slotDelayTimer()
+{
+    const QString msg = "Timer Expired!";
+    ui->lblStatus->setText(msg);
+    setWindowTitle(msg);
+    trayIcon->setToolTip(msg);
+
+    player->play();
+
+    QIcon iconExpired(":/images/stopwatch-expired.png");
+    setIcon(iconExpired);
+
+    QString userMessage = ui->txtEdMsg->toPlainText();
+    if (userMessage.length()==0) userMessage = "";
+    trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
+}
+
+void MainWindow::on_lnEd_returnPressed()
+{
+    ui->txtEdMsg->setFocus();
 }
 
 // NOTE: MS Windows requires that if the pop up is activated, and a user
@@ -226,48 +248,16 @@ void MainWindow::messageClicked()
    showAndSetActive();
 }
 
-void MainWindow::createActions()
+MainWindow::~MainWindow()
 {
-    minimizeAction = new QAction(tr("Mi&nimize"), this);
-    connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
-
-    restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
-
-    stopAction = new QAction(tr("&Stop Alarm"), this);
-    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbAction_clicked);
-
-    quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
-}
-
-void MainWindow::createTrayIcon()
-{
-    trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(minimizeAction);
-    trayIconMenu->addAction(restoreAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(stopAction);
-    trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
-
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(trayIconMenu);
-}
-
-
-bool MainWindow::eventFilter(QObject *watched, QEvent *event)
-{
-    if ((watched==ui->txtEdMsg) && (event->type()==QEvent::KeyPress))
-    {
-        if ((static_cast<QKeyEvent *>(event)->key()==Qt::Key_Return) ||
-                (static_cast<QKeyEvent *>(event)->key()==Qt::Key_Enter))
-        {
-            on_pbAction_clicked(); // Run the Timer on enter key Press!
-            event->accept();
-            return true;
-        }
-    }
-    // return Qt's default implementation:
-    return QMainWindow::eventFilter(watched, event);
+    delete delayTimer;
+    delete playlist;
+    delete player;
+    delete ui;
+    delete minimizeAction;
+    delete restoreAction;
+    delete stopAction;
+    delete quitAction;
+    delete trayIconMenu;
+    delete trayIcon;
 }
