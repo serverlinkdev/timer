@@ -6,7 +6,7 @@
 
 ![](screenshot-tooltip.png)
 
-A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.3 released on 4/20/20.
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.5 released on 5/11/20.
 
 ## Features:
 + Rapid entry!  
@@ -18,6 +18,7 @@ A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Op
 	4. Press enter to start the timer
 	
 + Full system tray support for GNU/Linux and MS Windows supporting:
+  - Application minimizes to the system tray on startup.
   - Start button becomes Stop button when timer is activated and vice versa.
   - Close program window minimizes to tray
   - Single click minimizes AND restores from tray
