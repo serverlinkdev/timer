@@ -28,6 +28,10 @@ private:
     Ui::MainWindow *ui=nullptr;
     bool isRunning;
 
+    int mainwindowHeight;
+    int mainwindowWidth;
+    QPoint mainwindowScreenCoordinates;
+
     QTimer *delayTimer=nullptr;
     QMediaPlayer *player=nullptr;
     QMediaPlaylist *playlist = nullptr;
@@ -55,6 +59,8 @@ private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void messageClicked();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

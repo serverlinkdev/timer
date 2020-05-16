@@ -115,8 +115,30 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
     case QSystemTrayIcon::Trigger:
-        (isHidden()) ? showAndSetActive() : QMainWindow::hide();
-        break;
+        if (this->isHidden())
+        {
+            // hack for GNU not restoring variable Qpoints!
+            resize(mainwindowWidth + 1, mainwindowHeight);
+
+            // move(100,100); <-- no hack required Qt please fix this!!
+            move(mainwindowScreenCoordinates);
+
+            showAndSetActive();
+
+            // must call here for hack to work
+            resize(mainwindowWidth, mainwindowHeight);
+
+            return;
+        }
+        else
+        {
+            mainwindowHeight = height();
+            mainwindowWidth = width();
+            mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+
+            hide();
+            return;
+        }
     case QSystemTrayIcon::DoubleClick:
         break;
     case QSystemTrayIcon::MiddleClick:
@@ -156,6 +178,8 @@ void MainWindow::on_pbAction_clicked()
         ui->pbAction->setText("Stop");
 
         stopAction->setDisabled(false);
+
+        setFocus();
     }
     else // stop
     {
@@ -181,6 +205,8 @@ void MainWindow::on_pbAction_clicked()
 
         QIcon iconDef(":/images/stopwatch.png");
         setIcon(iconDef);
+
+        setFocus();
     }
 }
 
@@ -260,4 +286,14 @@ MainWindow::~MainWindow()
     delete quitAction;
     delete trayIconMenu;
     delete trayIcon;
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    mainwindowHeight = height();
+    mainwindowWidth = width();
+    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+
+    QMainWindow::closeEvent(event);
 }
