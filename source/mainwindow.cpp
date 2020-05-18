@@ -12,7 +12,10 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    isRunning(false)
+    isRunning(false),
+    mainwindowHeight(280),
+    mainwindowWidth(177)
+
 {
     createActions();
     stopAction->setDisabled(true);
