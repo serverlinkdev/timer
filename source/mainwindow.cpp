@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QTime>
 #include <QUrl>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,6 +71,15 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    mainwindowHeight = height();
+    mainwindowWidth = width();
+    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+
+    QMainWindow::closeEvent(event);
+}
+
 void MainWindow::createActions()
 {
     minimizeAction = new QAction(tr("Mi&nimize"), this);
@@ -83,6 +93,27 @@ void MainWindow::createActions()
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+}
+
+void MainWindow::createPalette()
+{
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor(54,57,63));
+
+    // the trays pop up menu colors
+    palette.setColor(QPalette::Base, QColor(54,57,63));
+
+    // the trays normal text color
+    palette.setColor(QPalette::Text, Qt::white);
+
+    // the trays disabled text color
+    palette.setColor(QPalette::Disabled, QPalette::Text, QColor("#474747"));
+
+    // mouse over of items in tray, and also highlighted text on mainwindow
+    palette.setColor(QPalette::Highlight, QColor("#727272"));
+    palette.setColor(QPalette::HighlightedText, QColor(33,33,33));
+
+    QApplication::setPalette(palette);
 }
 
 void MainWindow::createTrayIcon()
@@ -113,27 +144,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
     // return Qt's default implementation:
     return QMainWindow::eventFilter(watched, event);
-}
-
-void MainWindow::createPalette()
-{
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(54,57,63));
-
-    // the trays pop up menu colors
-    palette.setColor(QPalette::Base, QColor(54,57,63));
-
-    // the trays normal text color
-    palette.setColor(QPalette::Text, Qt::white);
-
-    // the trays disabled text color
-    palette.setColor(QPalette::Disabled, QPalette::Text, QColor("#474747"));
-
-    // mouse over of items in tray, and also highlighted text on mainwindow
-    palette.setColor(QPalette::Highlight, QColor("#727272"));
-    palette.setColor(QPalette::HighlightedText, QColor(33,33,33));
-
-    QApplication::setPalette(palette);
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
@@ -173,8 +183,39 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+MainWindow::~MainWindow()
+{
+    delete delayTimer;
+    delete playlist;
+    delete player;
+    delete ui;
+    delete minimizeAction;
+    delete restoreAction;
+    delete stopAction;
+    delete quitAction;
+    delete trayIconMenu;
+    delete trayIcon;
+}
+
+// NOTE: MS Windows requires that if the pop up is activated, and a user
+// interacts with the system tray icon, this function must be called.
+// So, if the pop up activates, and user clicks on tray icon this will fire
+// no matter what.  If this is an issue, you will neeed to override the
+// behavior, or perhaps do some validation with an internal variable.
+void MainWindow::messageClicked()
+{
+   on_pbAction_clicked();
+   showAndSetActive();
+}
+
+void MainWindow::on_lnEd_returnPressed()
+{
+    ui->txtEdMsg->setFocus();
+}
+
 void MainWindow::on_pbAction_clicked()
 {
+    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
     if ((!delayTimer->isActive()) && !isRunning) // start
     {
         isRunning=true;
@@ -283,42 +324,6 @@ void MainWindow::slotDelayTimer()
     trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
 }
 
-void MainWindow::on_lnEd_returnPressed()
-{
-    ui->txtEdMsg->setFocus();
-}
-
-// NOTE: MS Windows requires that if the pop up is activated, and a user
-// interacts with the system tray icon, this function must be called.
-// So, if the pop up activates, and user clicks on tray icon this will fire
-// no matter what.  If this is an issue, you will neeed to override the
-// behavior, or perhaps do some validation with an internal variable.
-void MainWindow::messageClicked()
-{
-   on_pbAction_clicked();
-   showAndSetActive();
-}
-
-MainWindow::~MainWindow()
-{
-    delete delayTimer;
-    delete playlist;
-    delete player;
-    delete ui;
-    delete minimizeAction;
-    delete restoreAction;
-    delete stopAction;
-    delete quitAction;
-    delete trayIconMenu;
-    delete trayIcon;
-}
 
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    mainwindowHeight = height();
-    mainwindowWidth = width();
-    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 
-    QMainWindow::closeEvent(event);
-}
