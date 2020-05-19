@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     createPalette();
     createActions();
-    stopAction->setDisabled(true);
+
     createTrayIcon();
     QIcon iconDef(":/images/stopwatch.png");
     setIcon(iconDef);
@@ -93,6 +93,8 @@ void MainWindow::createActions()
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+
+    stopAction->setDisabled(true);
 }
 
 void MainWindow::createPalette()
