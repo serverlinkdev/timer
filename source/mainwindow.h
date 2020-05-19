@@ -32,6 +32,8 @@ private:
     int mainwindowWidth;
     QPoint mainwindowScreenCoordinates;
 
+    void createPalette();
+
     QTimer *delayTimer=nullptr;
     QMediaPlayer *player=nullptr;
     QMediaPlaylist *playlist = nullptr;

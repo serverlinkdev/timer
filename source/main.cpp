@@ -1,11 +1,13 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QMessageBox>
+#include <QStyleFactory>
 #include <QSystemTrayIcon>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
 
     QApplication a(argc, argv);
 

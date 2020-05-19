@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainwindowWidth(177)
 
 {
+    createPalette();
     createActions();
     stopAction->setDisabled(true);
     createTrayIcon();
@@ -112,6 +113,27 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
     // return Qt's default implementation:
     return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::createPalette()
+{
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, QColor(54,57,63));
+
+    // the trays pop up menu colors
+    palette.setColor(QPalette::Base, QColor(54,57,63));
+
+    // the trays normal text color
+    palette.setColor(QPalette::Text, Qt::white);
+
+    // the trays disabled text color
+    palette.setColor(QPalette::Disabled, QPalette::Text, QColor("#474747"));
+
+    // mouse over of items in tray, and also highlighted text on mainwindow
+    palette.setColor(QPalette::Highlight, QColor("#727272"));
+    palette.setColor(QPalette::HighlightedText, QColor(33,33,33));
+
+    QApplication::setPalette(palette);
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
