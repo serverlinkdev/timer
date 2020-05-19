@@ -34,7 +34,10 @@ private:
 
     void createPalette();
 
+    void createDelayTimer();
     QTimer *delayTimer=nullptr;
+
+    void createPlayer();
     QMediaPlayer *player=nullptr;
     QMediaPlaylist *playlist = nullptr;
 

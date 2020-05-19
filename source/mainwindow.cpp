@@ -20,16 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createPalette();
     createActions();
     createTrayIcon();
-
-    delayTimer = new QTimer(this);
-    connect(delayTimer, &QTimer::timeout,
-            this, &MainWindow::slotDelayTimer,Qt::UniqueConnection);
-
-    player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
-    playlist = new QMediaPlaylist();
-    playlist->addMedia(QUrl("qrc:/sound/pop.wav"));
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
-    player->setPlaylist(playlist);
+    createDelayTimer();
+    createPlayer();
 
     ui->setupUi(this);
     ui->lblStatus->setText("Habouji!");
@@ -37,13 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     auto icon = ":/images/stopwatch.png";
     setWindowIcon(QIcon(icon));
-
-    // Sadly when put into the CSS in designer, it won't alow modifying
-    // the QlineEdit, which that too completely ignores the CSS in desginer
-    // The CSS in Qt is broken !!!!
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(54,57,63));
-    this->setPalette(palette);
 
     // we'll allow a timer for a full week's worth of minutes
     ui->lnEd->setValidator(new QIntValidator(1,10080, this));
@@ -87,6 +72,13 @@ void MainWindow::createActions()
     stopAction->setDisabled(true);
 }
 
+void MainWindow::createDelayTimer()
+{
+    delayTimer = new QTimer(this);
+    connect(delayTimer, &QTimer::timeout,
+            this, &MainWindow::slotDelayTimer,Qt::UniqueConnection);
+}
+
 void MainWindow::createPalette()
 {
     QPalette palette = this->palette();
@@ -106,6 +98,15 @@ void MainWindow::createPalette()
     palette.setColor(QPalette::HighlightedText, QColor(33,33,33));
 
     QApplication::setPalette(palette);
+}
+
+void MainWindow::createPlayer()
+{
+    player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
+    playlist = new QMediaPlaylist();
+    playlist->addMedia(QUrl("qrc:/sound/pop.wav"));
+    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    player->setPlaylist(playlist);
 }
 
 void MainWindow::createTrayIcon()
