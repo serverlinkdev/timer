@@ -54,6 +54,8 @@ private:
     void setButtonHoverColor(ButtonColor color);
     void showAndSetActive();
 
+    void tweakUi();
+
 private slots:
     void slotDelayTimer();
 

@@ -24,20 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     createPlayer();
 
     ui->setupUi(this);
-    ui->lblStatus->setText("Habouji!");
-    setButtonHoverColor(green);
 
-    auto icon = ":/images/stopwatch.png";
-    setWindowIcon(QIcon(icon));
-
-    // we'll allow a timer for a full week's worth of minutes
-    ui->lnEd->setValidator(new QIntValidator(1,10080, this));
-    ui->lnEd->setStyleSheet("background-color:QColor(33,33,33)");
-
-    ui->txtEdMsg->setStyleSheet("background-color:QColor(33,33,33)");
-
-    // text edits do not have a return key press event, so we'll make our own:
-    ui->txtEdMsg->installEventFilter(this);
+    tweakUi();
 
     // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
     // and also disable resizing the window
@@ -53,6 +41,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 
     QMainWindow::closeEvent(event);
+    QApplication::exit(0); // TODO delete for release
 }
 
 void MainWindow::createActions()
@@ -84,8 +73,9 @@ void MainWindow::createPalette()
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, QColor(54,57,63));
 
-    // the trays pop up menu colors
-    palette.setColor(QPalette::Base, QColor(54,57,63));
+    // this item has inconsistent behavior tween 5.12 and 5.14.  lesser of two
+    // evils is to set this here and set stylesheet special for the tray
+    palette.setColor(QPalette::Base, QColor(33,33,33));
 
     // the trays normal text color
     palette.setColor(QPalette::Text, Qt::white);
@@ -129,6 +119,25 @@ void MainWindow::createTrayIcon()
     connect(trayIcon, &QSystemTrayIcon::messageClicked,
             this, &MainWindow::messageClicked);
     trayIcon->setToolTip("Not running a timer");
+
+    // Tray theming is diff in 5.12 & 5.14 ; we'll set the tray manualy
+    // so it will behave the same in both versions
+    auto css =
+                /* this is menu background color */
+                "QMenu {"
+                    "color: white;"
+                    "background-color: #36393F;}"
+
+                /* this is mouse over colors for the context menu */
+                "QMenu::item:selected {"
+                    "background-color: #212121;}"
+
+                /* this is colors when an item is disabled */
+                "QMenu::item::disabled{"
+                    "color: #858A96;"
+                    "background-color: #36393F;}";
+
+    trayIconMenu->setStyleSheet(css);
     trayIcon->show();
 }
 
@@ -326,6 +335,19 @@ void MainWindow::slotDelayTimer()
     trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
 }
 
+void MainWindow::tweakUi()
+{
+    ui->lblStatus->setText("Habouji!");
+    setButtonHoverColor(green);
 
+    auto icon = ":/images/stopwatch.png";
+    setWindowIcon(QIcon(icon));
+
+    // we'll allow a timer for a full week's worth of minutes
+    ui->lnEd->setValidator(new QIntValidator(1,10080, this));
+
+    // text edits do not have a return key press event, so we'll make our own:
+    ui->txtEdMsg->installEventFilter(this);
+}
 
 

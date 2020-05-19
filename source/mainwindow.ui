@@ -52,6 +52,9 @@ color: white;
             <pointsize>12</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
           <property name="text">
            <string>Minutes</string>
           </property>
@@ -75,6 +78,9 @@ color: white;
           </property>
           <property name="toolTip">
            <string/>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="frame">
            <bool>false</bool>
@@ -198,6 +204,9 @@ color: white;
         </property>
         <property name="toolTipDuration">
          <number>-1</number>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
         </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
