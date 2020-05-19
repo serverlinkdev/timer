@@ -16,20 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     isRunning(false),
     mainwindowHeight(280),
     mainwindowWidth(177)
-
 {
     createPalette();
     createActions();
-
     createTrayIcon();
-    QIcon iconDef(":/images/stopwatch.png");
-    setIcon(iconDef);
-    connect(trayIcon, &QSystemTrayIcon::activated,
-            this, &MainWindow::iconActivated);
-    connect(trayIcon, &QSystemTrayIcon::messageClicked,
-            this, &MainWindow::messageClicked);
-    trayIcon->setToolTip("Not running a timer");
-    trayIcon->show();
 
     delayTimer = new QTimer(this);
     connect(delayTimer, &QTimer::timeout,
@@ -130,6 +120,15 @@ void MainWindow::createTrayIcon()
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
+
+    QIcon iconDef(":/images/stopwatch.png");
+    setIcon(iconDef);
+    connect(trayIcon, &QSystemTrayIcon::activated,
+            this, &MainWindow::iconActivated);
+    connect(trayIcon, &QSystemTrayIcon::messageClicked,
+            this, &MainWindow::messageClicked);
+    trayIcon->setToolTip("Not running a timer");
+    trayIcon->show();
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
