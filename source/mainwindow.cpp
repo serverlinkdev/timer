@@ -343,6 +343,10 @@ void MainWindow::tweakUi()
 
     // text edits do not have a return key press event, so we'll make our own:
     ui->txtEdMsg->installEventFilter(this);
+
+    auto placeHolderText = "Type your message here.  "
+                           "Hit enter to start the timer.";
+    ui->txtEdMsg->setPlaceholderText(placeHolderText);
 }
 
 void MainWindow::tweakWindowFlags()

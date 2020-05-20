@@ -212,7 +212,7 @@ color: white;
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="placeholderText">
-         <string>Type your message here.  Hit enter to start the timer.</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
