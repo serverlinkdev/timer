@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>177</width>
-    <height>280</height>
+    <height>279</height>
    </rect>
   </property>
   <property name="font">
@@ -35,6 +35,15 @@ color: white;
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <property name="leftMargin">
+     <number>7</number>
+    </property>
+    <property name="topMargin">
+     <number>9</number>
+    </property>
+    <property name="rightMargin">
+     <number>7</number>
+    </property>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -88,9 +97,6 @@ color: white;
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
-          <property name="placeholderText">
-           <string/>
-          </property>
          </widget>
         </item>
        </layout>
@@ -130,89 +136,13 @@ color: white;
           <height>100</height>
          </size>
         </property>
-        <property name="palette">
-         <palette>
-          <active>
-           <colorrole role="Text">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="PlaceholderText">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </active>
-          <inactive>
-           <colorrole role="Text">
-            <brush brushstyle="SolidPattern">
-             <color alpha="255">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="PlaceholderText">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>255</red>
-              <green>255</green>
-              <blue>255</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </inactive>
-          <disabled>
-           <colorrole role="Text">
-            <brush brushstyle="SolidPattern">
-             <color alpha="96">
-              <red>164</red>
-              <green>166</green>
-              <blue>168</blue>
-             </color>
-            </brush>
-           </colorrole>
-           <colorrole role="PlaceholderText">
-            <brush brushstyle="SolidPattern">
-             <color alpha="128">
-              <red>208</red>
-              <green>208</green>
-              <blue>208</blue>
-             </color>
-            </brush>
-           </colorrole>
-          </disabled>
-         </palette>
-        </property>
         <property name="font">
          <font>
           <pointsize>12</pointsize>
          </font>
         </property>
-        <property name="toolTip">
-         <string/>
-        </property>
-        <property name="toolTipDuration">
-         <number>-1</number>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="placeholderText">
-         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -221,7 +151,7 @@ color: white;
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <property name="leftMargin">
-       <number>42</number>
+       <number>45</number>
       </property>
       <item>
        <widget class="QPushButton" name="pbAction">
@@ -250,25 +180,29 @@ color: white;
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="lblStatus">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="lblStatus">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
