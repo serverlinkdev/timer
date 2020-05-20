@@ -52,6 +52,7 @@ private:
     QSystemTrayIcon *trayIcon = nullptr;
 
     void setButtonHoverColor(ButtonColor color);
+    void tweakWindowFlags();
     void showAndSetActive();
 
     void tweakUi();

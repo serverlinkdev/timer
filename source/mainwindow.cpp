@@ -26,12 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     tweakUi();
-
-    // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
-    // and also disable resizing the window
-    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
-    setFixedSize(177,280);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    tweakWindowFlags();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -350,4 +345,11 @@ void MainWindow::tweakUi()
     ui->txtEdMsg->installEventFilter(this);
 }
 
-
+void MainWindow::tweakWindowFlags()
+{
+    // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
+    // and also disable resizing the window
+    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
+    setFixedSize(177,280);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+}
