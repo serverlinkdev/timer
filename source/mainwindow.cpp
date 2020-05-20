@@ -8,7 +8,6 @@
 #include <QMenu>
 #include <QTime>
 #include <QUrl>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
