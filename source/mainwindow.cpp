@@ -35,7 +35,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     mainwindowWidth = width();
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 
-    minimizeAction->setDisabled(true);
+    hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
 
     QMainWindow::closeEvent(event);
@@ -44,8 +44,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::createActions()
 {
-    minimizeAction = new QAction(tr("&Hide"), this);
-    connect(minimizeAction, &QAction::triggered,
+    hideAction = new QAction(tr("&Hide"), this);
+    connect(hideAction, &QAction::triggered,
             this, &MainWindow::hideMainWindow);
 
     restoreAction = new QAction(tr("&Restore"), this);
@@ -57,7 +57,7 @@ void MainWindow::createActions()
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
-    minimizeAction->setDisabled(true);
+    hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
     stopAction->setDisabled(true);
 }
@@ -105,7 +105,7 @@ void MainWindow::createPlayer()
 void MainWindow::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
-    trayIconMenu->addAction(minimizeAction);
+    trayIconMenu->addAction(hideAction);
     trayIconMenu->addAction(restoreAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(stopAction);
@@ -167,7 +167,7 @@ void MainWindow::hideMainWindow()
     mainwindowWidth = width();
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 
-    minimizeAction->setDisabled(true);
+    hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
     hide();
 }
@@ -201,7 +201,7 @@ MainWindow::~MainWindow()
     delete playlist;
     delete player;
     delete ui;
-    delete minimizeAction;
+    delete hideAction;
     delete restoreAction;
     delete stopAction;
     delete quitAction;
@@ -343,7 +343,7 @@ void MainWindow::showAndSetActive()
     QMainWindow::show();
     QMainWindow::raise();
     QMainWindow::activateWindow();
-    minimizeAction->setDisabled(false);
+    hideAction->setDisabled(false);
     restoreAction->setDisabled(true);
 }
 

@@ -42,7 +42,7 @@ private:
     QMediaPlaylist *playlist = nullptr;
 
     void createActions();
-    QAction *minimizeAction = nullptr;
+    QAction *hideAction = nullptr;
     QAction *restoreAction = nullptr;
     QAction *stopAction = nullptr;
     QAction *quitAction = nullptr;
