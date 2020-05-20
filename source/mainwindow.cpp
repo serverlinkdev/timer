@@ -31,9 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    mainwindowHeight = height();
-    mainwindowWidth = width();
-    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+    updateMainwindowMemberVars();
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -163,9 +161,7 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 
 void MainWindow::hideMainWindow()
 {
-    mainwindowHeight = height();
-    mainwindowWidth = width();
-    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+    updateMainwindowMemberVars();
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -394,4 +390,11 @@ void MainWindow::tweakWindowFlags()
 
     Qt::WindowFlags windowFlags = (Qt::Widget | Qt::CustomizeWindowHint);
     setWindowFlags(windowFlags |= Qt::WindowCloseButtonHint);
+}
+
+void MainWindow::updateMainwindowMemberVars()
+{
+    mainwindowHeight = height();
+    mainwindowWidth = width();
+    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 }

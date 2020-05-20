@@ -55,6 +55,7 @@ private:
 
     void onRestore();
     void setButtonHoverColor(ButtonColor color);
+    void updateMainwindowMemberVars();
     void showAndSetActive();
 
     void tweakWindowFlags();
