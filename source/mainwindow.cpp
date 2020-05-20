@@ -138,17 +138,18 @@ void MainWindow::createTrayIcon()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-    if ((watched==ui->txtEdMsg) && (event->type()==QEvent::KeyPress))
+    if ((watched == ui->txtEdMsg) && (event->type() == QEvent::KeyPress))
     {
-        if ((static_cast<QKeyEvent *>(event)->key()==Qt::Key_Return) ||
-                (static_cast<QKeyEvent *>(event)->key()==Qt::Key_Enter))
+        auto key = static_cast<QKeyEvent *>(event)->key();
+
+        if ((key == Qt::Key_Return) || (key == Qt::Key_Enter))
         {
             on_pbAction_clicked(); // Run the Timer on enter key Press!
             event->accept();
             return true;
         }
     }
-    // return Qt's default implementation:
+
     return QMainWindow::eventFilter(watched, event);
 }
 
