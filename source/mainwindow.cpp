@@ -140,6 +140,7 @@ void MainWindow::createTrayIcon()
 
     trayIconMenu->setStyleSheet(css);
     trayIcon->show();
+    trayIcon->showMessage("Webcams", "Running in your tray", iconDef, 2000);
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -212,8 +213,17 @@ MainWindow::~MainWindow()
 // behavior, or perhaps do some validation with an internal variable.
 void MainWindow::messageClicked()
 {
-   on_pbAction_clicked();
-   showAndSetActive();
+    if ((!delayTimer->isActive()) && !isRunning)
+    {
+        // on startup, user clicks notification pop up message
+        showAndSetActive();
+    }
+    else
+    {
+        // users clicks notification pop up message that alarm has expired
+        on_pbAction_clicked();
+        onRestore();
+    }
 }
 
 void MainWindow::on_lnEd_returnPressed()
