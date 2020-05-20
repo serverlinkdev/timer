@@ -35,17 +35,21 @@ void MainWindow::closeEvent(QCloseEvent *event)
     mainwindowWidth = width();
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 
+    minimizeAction->setDisabled(true);
+    restoreAction->setDisabled(false);
+
     QMainWindow::closeEvent(event);
-    QApplication::exit(0); // TODO delete for release
+//    QApplication::exit(0); // TODO delete for release
 }
 
 void MainWindow::createActions()
 {
-    minimizeAction = new QAction(tr("Mi&nimize"), this);
-    connect(minimizeAction, &QAction::triggered, this, &QMainWindow::hide);
+    minimizeAction = new QAction(tr("&Hide"), this);
+    connect(minimizeAction, &QAction::triggered,
+            this, &MainWindow::hideMainWindow);
 
     restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, &QAction::triggered, this, &MainWindow::showAndSetActive);
+    connect(restoreAction, &QAction::triggered, this, &MainWindow::onRestore);
 
     stopAction = new QAction(tr("&Stop Alarm"), this);
     connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbAction_clicked);
@@ -53,14 +57,18 @@ void MainWindow::createActions()
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 
+    minimizeAction->setDisabled(true);
+    restoreAction->setDisabled(false);
     stopAction->setDisabled(true);
 }
 
 void MainWindow::createDelayTimer()
 {
     delayTimer = new QTimer(this);
-    connect(delayTimer, &QTimer::timeout,
-            this, &MainWindow::slotDelayTimer,Qt::UniqueConnection);
+    connect(delayTimer,
+            &QTimer::timeout,
+            this,
+            &MainWindow::slotDelayTimer,Qt::UniqueConnection);
 }
 
 void MainWindow::createPalette()
@@ -153,32 +161,29 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     return QMainWindow::eventFilter(watched, event);
 }
 
+void MainWindow::hideMainWindow()
+{
+    mainwindowHeight = height();
+    mainwindowWidth = width();
+    mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
+
+    minimizeAction->setDisabled(true);
+    restoreAction->setDisabled(false);
+    hide();
+}
+
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     switch (reason) {
     case QSystemTrayIcon::Trigger:
         if (this->isHidden())
         {
-            // hack for GNU not restoring variable Qpoints!
-            resize(mainwindowWidth + 1, mainwindowHeight);
-
-            // move(100,100); <-- no hack required Qt please fix this!!
-            move(mainwindowScreenCoordinates);
-
-            showAndSetActive();
-
-            // must call here for hack to work
-            resize(mainwindowWidth, mainwindowHeight);
-
+            onRestore();
             return;
         }
         else
         {
-            mainwindowHeight = height();
-            mainwindowWidth = width();
-            mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
-
-            hide();
+            hideMainWindow();
             return;
         }
     case QSystemTrayIcon::DoubleClick:
@@ -222,7 +227,6 @@ void MainWindow::on_lnEd_returnPressed()
 
 void MainWindow::on_pbAction_clicked()
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
     if ((!delayTimer->isActive()) && !isRunning) // start
     {
         isRunning=true;
@@ -283,6 +287,33 @@ void MainWindow::on_pbAction_clicked()
     }
 }
 
+void MainWindow::onRestore()
+{
+    // hard coding pts is no errors, eg. move(100,100); Qt please fix!
+
+    /* We're doing this hack to accomdate box window managers on GNU,
+     * However the titlebar will be off screen in top left of monitor
+     * on startup using the tray menu restore action.  But this hack
+     * will allow them to single click on the tray and never know
+     * the better.  If icem or other box users want right click restore
+     * from tray on initial startup then toggle the lines below.
+     */
+
+    // hack for GNU not restoring variable Qpoints!
+    resize(mainwindowWidth + 1, mainwindowHeight);
+
+    // BUG: comment this out for icewm or fluxbox; don't forget to
+    // uncomment the line below as well.
+    move(mainwindowScreenCoordinates);
+
+    showAndSetActive();
+
+    resize(mainwindowWidth, mainwindowHeight);
+
+    // BUG: uncomment this for icewm or fluxbox and comment out above
+    // move(mainwindowScreenCoordinates);
+}
+
 void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
 {
     QString cssButton;
@@ -309,9 +340,11 @@ void MainWindow::setIcon(QIcon icon)
 
 void MainWindow::showAndSetActive()
 {
-    QMainWindow::showNormal();
+    QMainWindow::show();
     QMainWindow::raise();
     QMainWindow::activateWindow();
+    minimizeAction->setDisabled(false);
+    restoreAction->setDisabled(true);
 }
 
 void MainWindow::slotDelayTimer()

@@ -51,10 +51,13 @@ private:
     QMenu *trayIconMenu = nullptr;
     QSystemTrayIcon *trayIcon = nullptr;
 
+    void hideMainWindow();
+
+    void onRestore();
     void setButtonHoverColor(ButtonColor color);
-    void tweakWindowFlags();
     void showAndSetActive();
 
+    void tweakWindowFlags();
     void tweakUi();
 
 private slots:
