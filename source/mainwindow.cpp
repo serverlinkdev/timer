@@ -349,7 +349,10 @@ void MainWindow::tweakWindowFlags()
 {
     // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
     // and also disable resizing the window
-    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
-    setFixedSize(177,280);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+//    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
+//    setFixedSize(177,280);
+//    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    Qt::WindowFlags windowFlags = (Qt::Widget | Qt::CustomizeWindowHint);
+    setWindowFlags(windowFlags |= Qt::WindowCloseButtonHint);
 }
