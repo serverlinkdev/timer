@@ -347,11 +347,12 @@ void MainWindow::tweakUi()
 
 void MainWindow::tweakWindowFlags()
 {
-    // Disable resize of the mainwindow, the minimize and ? buttons in toolbar
-    // and also disable resizing the window
-//    setWindowFlags(Qt::Tool | Qt::MSWindowsFixedSizeDialogHint);
-//    setFixedSize(177,280);
-//    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    // must allow for resize in W for our hack for restore window position
+    setMinimumWidth(177);
+    setMaximumWidth(178);
+
+    setMinimumHeight(280);
+    setMaximumHeight(280);
 
     Qt::WindowFlags windowFlags = (Qt::Widget | Qt::CustomizeWindowHint);
     setWindowFlags(windowFlags |= Qt::WindowCloseButtonHint);
