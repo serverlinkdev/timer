@@ -134,7 +134,7 @@ void MainWindow::createPlaylist()
     {
         soundFile = factorySoundFile;
     }
-    playlist->addMedia(QUrl(soundFile));
+    playlist->addMedia(QMediaContent(QUrl::fromLocalFile(soundFile)));
 }
 
 void MainWindow::changePlaylist()
@@ -450,8 +450,8 @@ void MainWindow::tweakUi()
     // text edits do not have a return key press event, so we'll make our own:
     ui->txtEdMsg->installEventFilter(this);
 
-    auto placeHolderText = "Type your message here.  "
-                           "Hit enter to start the timer.";
+    auto placeHolderText = "Type message and hit enter to start.\n"
+                           "HINT: Right click in window to change sound.";
     ui->txtEdMsg->setPlaceholderText(placeHolderText);
 }
 
