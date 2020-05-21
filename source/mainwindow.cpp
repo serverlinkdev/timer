@@ -133,6 +133,8 @@ void MainWindow::createPlaylist()
     if (soundFile.isEmpty() || soundFile == "FACTORY")
     {
         soundFile = factorySoundFile;
+        playlist->addMedia(QUrl(soundFile));
+        return;
     }
     playlist->addMedia(QMediaContent(QUrl::fromLocalFile(soundFile)));
 }
