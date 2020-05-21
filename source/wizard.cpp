@@ -1,7 +1,6 @@
 #include "wizard.h"
 #include "ui_wizard.h"
 #include <QFileDialog>
-#include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStandardPaths>
