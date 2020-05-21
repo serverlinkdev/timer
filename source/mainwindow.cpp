@@ -50,6 +50,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
+    if (isRunning) return; // Do NOT handle change of sound file if active timer
     contextMenu = new QMenu(this);
 
     contextMenu->addAction("&Choose new alarm sound Wizard", this,
