@@ -45,7 +45,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     restoreAction->setDisabled(false);
 
     QMainWindow::closeEvent(event);
-    QApplication::exit(0); // TODO delete for release
+//    QApplication::exit(0);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
@@ -300,8 +300,7 @@ void MainWindow::on_pbAction_clicked()
         const int val = ui->lnEd->text().toInt();
         if (val==0) return;
         ui->lnEd->setReadOnly(true);
-        const int delay = val * 600; // changd for DEV mode TODO restore at rel time
-//        const int delay = val * 60000; // TODO restore me for rel
+        const int delay = val * 60000;
         delayTimer->setSingleShot(true);
         delayTimer->start(delay);
 
