@@ -9,9 +9,15 @@
 #include <QTime>
 #include <QUrl>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(const QString configFile,
+                       const QString &publisher,
+                       const QString &appName,
+                       QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    configFile(configFile),
+    publisher(publisher),
+    appName(appName),
     isRunning(false),
     mainwindowHeight(280),
     mainwindowWidth(177)
@@ -36,7 +42,21 @@ void MainWindow::closeEvent(QCloseEvent *event)
     restoreAction->setDisabled(false);
 
     QMainWindow::closeEvent(event);
-//    QApplication::exit(0); // TODO delete for release
+    QApplication::exit(0); // TODO delete for release
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent *event)
+{
+    contextMenu = new QMenu(this);
+
+    contextMenu->addAction("&Choose new alarm sound Wizard", this,
+                           SLOT(runSoundFilePickerWizard()));
+
+    contextMenu->exec(event->globalPos());
+
+    contextMenu->clear();
+    delete contextMenu;
+    contextMenu = nullptr;
 }
 
 void MainWindow::createActions()
@@ -72,6 +92,8 @@ void MainWindow::createPalette()
 {
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, QColor(54,57,63));
+
+    palette.setColor(QPalette::WindowText, Qt::white);
 
     // this item has inconsistent behavior tween 5.12 and 5.14.  lesser of two
     // evils is to set this here and set stylesheet special for the tray
@@ -319,6 +341,12 @@ void MainWindow::onRestore()
     // move(mainwindowScreenCoordinates);
 }
 
+void MainWindow::runSoundFilePickerWizard()
+{
+    w = new Wizard(configFile, publisher, appName);
+    w->show();
+}
+
 void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
 {
     QString cssButton;
@@ -407,3 +435,5 @@ void MainWindow::updateMainwindowMemberVars()
     mainwindowWidth = width();
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 }
+
+

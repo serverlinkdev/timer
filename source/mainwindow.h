@@ -9,6 +9,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
+#include "wizard.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -18,7 +20,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QString configFile,
+                        const QString &publisher,
+                        const QString &appName,
+                        QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
@@ -26,6 +31,9 @@ private:
 
     bool eventFilter(QObject *watched, QEvent *event) override;
     Ui::MainWindow *ui=nullptr;
+    QString configFile;
+    QString publisher;
+    QString appName;
     bool isRunning;
 
     int mainwindowHeight;
@@ -61,6 +69,9 @@ private:
     void tweakWindowFlags();
     void tweakUi();
 
+    Wizard *w = nullptr;
+    QMenu *contextMenu = nullptr;
+
 private slots:
     void slotDelayTimer();
 
@@ -70,9 +81,12 @@ private slots:
     void setIcon(QIcon icon);
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void messageClicked();
+    void runSoundFilePickerWizard();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
 };
 
 #endif // MAINWINDOW_H
