@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const QString configFile,
+    explicit MainWindow(const QString &configFile,
                         const QString &publisher,
                         const QString &appName,
                         QWidget *parent = nullptr);
@@ -35,10 +35,13 @@ private:
     QString publisher;
     QString appName;
     bool isRunning;
-
     int mainwindowHeight;
     int mainwindowWidth;
     QPoint mainwindowScreenCoordinates;
+
+    QString getSetting(const QString &someSetting) const;
+    void writeSettings(const QString &key,
+                       const QString &value);
 
     void createPalette();
 
@@ -46,7 +49,10 @@ private:
     QTimer *delayTimer=nullptr;
 
     void createPlayer();
+    void createPlaylist();
+    void changePlaylist();
     QMediaPlayer *player=nullptr;
+    QString factorySoundFile;
     QMediaPlaylist *playlist = nullptr;
 
     void createActions();
@@ -69,6 +75,7 @@ private:
     void tweakWindowFlags();
     void tweakUi();
 
+    void createWizard();
     Wizard *w = nullptr;
     QMenu *contextMenu = nullptr;
 

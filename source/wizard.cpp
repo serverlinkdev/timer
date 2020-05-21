@@ -6,7 +6,7 @@
 #include <QSettings>
 #include <QStandardPaths>
 
-Wizard::Wizard(const QString configFile, const QString &publisher,
+Wizard::Wizard(const QString &configFile, const QString &publisher,
                const QString &appName, QDialog *parent) :
     QDialog(parent),
     configFile(configFile),
@@ -15,6 +15,7 @@ Wizard::Wizard(const QString configFile, const QString &publisher,
     ui(new Ui::Wizard),
     soundFileLocationDone(false)
 {
+    // The QDialog does not pick up our font size at all plus we want bigger
     QFont f;
     f.setPointSize(14);
     QApplication::setFont(f);
@@ -34,65 +35,6 @@ Wizard::Wizard(const QString configFile, const QString &publisher,
     }
 
     doWizard();
-}
-
-Wizard::~Wizard()
-{
-    delete ui;
-}
-
-void Wizard::on_pbBrowse_clicked()
-{
-    if (!soundFileLocationDone)
-    {
-        auto initialPath =
-                QStandardPaths::writableLocation(
-                    QStandardPaths::MusicLocation);
-
-        if (initialPath.isEmpty()) initialPath = QDir::currentPath();
-
-        auto soundFileLocation =
-                QFileDialog::getOpenFileName(this,
-                                             "Pick sound file",
-                                             initialPath);
-
-        // user pressed esc when file dialog open so as to cancel. but the
-        // Qt file picker just clobbered the soundFileLocation var, it is empty.
-        // we want to honor their cancel event, we'll write back the original
-        // in the reject event handler
-        if (soundFileLocation.isEmpty())
-        {
-            ui->lblGeneral->setText("No changes will be made to your sound "
-                                    "file preferences.");
-            ui->lblSpecific->setText("HINT:  You can run this wizard at any "
-                                     "time later.");
-
-            soundFileLocationDone = true;
-            ui->pbOK->setEnabled(true);
-            return;
-        }
-        else
-        {
-            ui->lblGeneral->setText("HINT:  You can run this wizard at any "
-                                    "time later.\n\nWill now use the following "
-                                    "sound file for alarms: ");
-            ui->lblSpecific->setText(soundFileLocation);
-            writeSettings("soundFileLocation", soundFileLocation);
-            soundFileLocationDone = true;
-            ui->pbOK->setEnabled(true);
-            return;
-        }
-    }
-}
-
-void Wizard::writeSettings(const QString &key, const QString &value)
-{
-    QSettings settings(QSettings::IniFormat,
-                       QSettings::UserScope,
-                       publisher,
-                       appName);
-
-    settings.setValue(key, value);
 }
 
 QString Wizard::getSetting(const QString &someSetting) const
@@ -127,18 +69,61 @@ void Wizard::doWizard()
     auto msg = "Please note: \n\n"
                "This program does not modify your registry (Windows).\n\n"
                "Your settings are saved in file:\n" + configFile + "\n\n"
-               "If you want to restart the wizard, or uninstall, "
-               "simply remove that file.\n\n"
                "GL HF!";
+
+    emit soundFileChanged();
 
     QMessageBox::information(this,
                              "Setup Complete!",
                              msg);
+
+    resetMemberVarsForNextRun();
 }
 
-void Wizard::on_pbOK_clicked()
+void Wizard::on_pbBrowse_clicked()
 {
-    doWizard();
+    if (!soundFileLocationDone)
+    {
+        auto initialPath =
+                QStandardPaths::writableLocation(
+                    QStandardPaths::MusicLocation);
+
+        if (initialPath.isEmpty()) initialPath = QDir::currentPath();
+
+        auto soundFileLocation =
+                QFileDialog::getOpenFileName(this,
+                                             "Pick sound file",
+                                             initialPath);
+
+        // user pressed esc when file dialog open so as to cancel. But the
+        // Qt file picker just clobbered the soundFileLocation var, it is empty
+        // Or can even hold a filename then they change their mind and hit esc
+        // as well.  So we want to honor their cancel event for these mulitiple
+        // ways of cancelling; so we'll write back the original
+        if (soundFileLocation.isEmpty())
+        {
+            ui->lblGeneral->setText("No changes will be made to your sound "
+                                    "file preferences.");
+            ui->lblSpecific->setText("HINT:  You can run this wizard at any "
+                                     "time later.");
+
+            soundFileLocationDone = true;
+            writeSettings("soundFileLocation", originalSoundFileLocation);
+            ui->pbOK->setEnabled(true);
+            return;
+        }
+        else
+        {
+            ui->lblGeneral->setText("HINT:  You can run this wizard at any "
+                                    "time later.\n\nWill now use the following "
+                                    "sound file for alarms: ");
+            ui->lblSpecific->setText(soundFileLocation);
+            writeSettings("soundFileLocation", soundFileLocation);
+            soundFileLocationDone = true;
+            ui->pbOK->setEnabled(true);
+            return;
+        }
+    }
 }
 
 void Wizard::on_pbCancel_clicked()
@@ -146,12 +131,43 @@ void Wizard::on_pbCancel_clicked()
     Wizard::reject();
 }
 
+void Wizard::on_pbOK_clicked()
+{
+    doWizard();
+}
+
 void Wizard::reject()
 {
-    // the file picker writes over the file.. so we have to set it back
-    // if an app crash.. user would have borked file.. but we'll set it
-    // back to factory in MainWindow TODO and they'll have to run the
-    // wizard again. TODO emit any changes
+    // There is 3 ways a user can cancel and all must be treated differently.
+    // This handles closing the window X and hitting cancel button
     writeSettings("soundFileLocation", originalSoundFileLocation);
+    resetMemberVarsForNextRun();
+    emit soundFileChanged();
     QDialog::reject();
+}
+
+void Wizard::resetMemberVarsForNextRun()
+{
+    // in case the user wants to run the wizard more than once, let's clean
+    // our slate instead of doing 'new' over and over in mainwindow and
+    // cleaning pointers etc
+
+    soundFileLocationDone = false;
+    doWizard(); // when called with above as false, it just resets the labels
+}
+
+Wizard::~Wizard()
+{
+    disconnect();
+    delete ui;
+}
+
+void Wizard::writeSettings(const QString &key, const QString &value)
+{
+    QSettings settings(QSettings::IniFormat,
+                       QSettings::UserScope,
+                       publisher,
+                       appName);
+
+    settings.setValue(key, value);
 }

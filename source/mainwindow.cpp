@@ -6,10 +6,11 @@
 #include <QIntValidator>
 #include <QMediaPlaylist>
 #include <QMenu>
+#include <QSettings>
 #include <QTime>
 #include <QUrl>
 
-MainWindow::MainWindow(const QString configFile,
+MainWindow::MainWindow(const QString &configFile,
                        const QString &publisher,
                        const QString &appName,
                        QWidget *parent) :
@@ -20,13 +21,15 @@ MainWindow::MainWindow(const QString configFile,
     appName(appName),
     isRunning(false),
     mainwindowHeight(280),
-    mainwindowWidth(177)
+    mainwindowWidth(177),
+    factorySoundFile("qrc:/sound/pop.wav")
 {
     createPalette();
     createActions();
     createTrayIcon();
     createDelayTimer();
     createPlayer();
+    createWizard();
 
     ui->setupUi(this);
 
@@ -116,9 +119,27 @@ void MainWindow::createPlayer()
 {
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     playlist = new QMediaPlaylist();
-    playlist->addMedia(QUrl("qrc:/sound/pop.wav"));
+    // get user's sound file on startup
+    createPlaylist();
     playlist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(playlist);
+}
+
+void MainWindow::createPlaylist()
+{
+    QString soundFile = getSetting("soundFileLocation");
+
+    if (soundFile.isEmpty() || soundFile == "FACTORY")
+    {
+        soundFile = factorySoundFile;
+    }
+    playlist->addMedia(QUrl(soundFile));
+}
+
+void MainWindow::changePlaylist()
+{
+    playlist->clear();
+    createPlaylist();
 }
 
 void MainWindow::createTrayIcon()
@@ -164,6 +185,13 @@ void MainWindow::createTrayIcon()
     trayIcon->showMessage("Webcams", "Running in your tray", iconDef, 2000);
 }
 
+void MainWindow::createWizard()
+{
+    w = new Wizard(configFile, publisher, appName);
+    connect(w, &Wizard::soundFileChanged,
+            this, &MainWindow::changePlaylist);
+}
+
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
     if ((watched == ui->txtEdMsg) && (event->type() == QEvent::KeyPress))
@@ -179,6 +207,16 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
 
     return QMainWindow::eventFilter(watched, event);
+}
+
+QString MainWindow::getSetting(const QString &someSetting) const
+{
+    QSettings settings(QSettings::IniFormat,
+                       QSettings::UserScope,
+                       publisher,
+                       appName);
+
+    return settings.value(someSetting).toString();
 }
 
 void MainWindow::hideMainWindow()
@@ -215,6 +253,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 MainWindow::~MainWindow()
 {
+    delete w;
     delete delayTimer;
     delete playlist;
     delete player;
@@ -260,7 +299,8 @@ void MainWindow::on_pbAction_clicked()
         const int val = ui->lnEd->text().toInt();
         if (val==0) return;
         ui->lnEd->setReadOnly(true);
-        const int delay = val * 60000;
+        const int delay = val * 600; // changd for DEV mode TODO restore at rel time
+//        const int delay = val * 60000; // TODO restore me for rel
         delayTimer->setSingleShot(true);
         delayTimer->start(delay);
 
@@ -343,7 +383,6 @@ void MainWindow::onRestore()
 
 void MainWindow::runSoundFilePickerWizard()
 {
-    w = new Wizard(configFile, publisher, appName);
     w->show();
 }
 
