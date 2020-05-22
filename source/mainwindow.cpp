@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDateTime>
-#include <QDebug>
 #include <QEvent>
 #include <QIntValidator>
 #include <QMediaPlaylist>
@@ -179,13 +178,13 @@ void MainWindow::createTrayIcon()
                     "background-color: #212121;}"
 
                 /* this is colors when an item is disabled */
-                "QMenu::item::disabled{"
+                "QMenu::item::disabled {"
                     "color: #858A96;"
                     "background-color: #36393F;}";
 
     trayIconMenu->setStyleSheet(css);
     trayIcon->show();
-    trayIcon->showMessage("Webcams", "Running in your tray", iconDef, 2000);
+    trayIcon->showMessage("Timer", "Running in your tray", iconDef, 2000);
 }
 
 void MainWindow::createWizard()
@@ -295,6 +294,7 @@ void MainWindow::onAboutClicked()
 {
     // pushbutton's default look was too tightly wrapped around the text
     auto msg = "Timer License: GPL V3.0\n"
+               "https://github.com/serverlinkdev/timer\n"
                "Using Qt framework from:\n"
                "https://www.qt.io/";
 
