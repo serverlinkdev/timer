@@ -6,6 +6,7 @@
 #include <QIntValidator>
 #include <QMediaPlaylist>
 #include <QMenu>
+#include <QMessageBox>
 #include <QSettings>
 #include <QTime>
 #include <QUrl>
@@ -66,21 +67,29 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 
 void MainWindow::createActions()
 {
-    hideAction = new QAction(tr("&Hide"), this);
+    aboutAction = new QAction("&About Timer", this);
+    connect(aboutAction, &QAction::triggered,
+            this, &MainWindow::onAboutClicked);
+
+    hideAction = new QAction("&Hide", this);
     connect(hideAction, &QAction::triggered,
             this, &MainWindow::hideMainWindow);
 
-    restoreAction = new QAction(tr("&Restore"), this);
+    quitAction = new QAction("&Quit", this);
+    connect(quitAction, &QAction::triggered,
+            qApp, &QCoreApplication::quit);
+
+    restoreAction = new QAction("&Restore", this);
     connect(restoreAction, &QAction::triggered, this,
             &MainWindow::onRestore);
 
-    stopAction = new QAction(tr("&Stop Alarm"), this);
+    stopAction = new QAction("&Stop Alarm", this);
     connect(stopAction, &QAction::triggered,
             this, &MainWindow::on_pbAction_clicked);
 
-    quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, &QAction::triggered,
-            qApp, &QCoreApplication::quit);
+    wizardAction = new QAction("Sound &File Picker", this);
+    connect(wizardAction, &QAction::triggered,
+            this, &MainWindow::runSoundFilePickerWizard);
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -152,6 +161,10 @@ void MainWindow::changePlaylist()
 void MainWindow::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(aboutAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(wizardAction);
+    trayIconMenu->addSeparator();
     trayIconMenu->addAction(hideAction);
     trayIconMenu->addAction(restoreAction);
     trayIconMenu->addSeparator();
@@ -265,6 +278,8 @@ MainWindow::~MainWindow()
     delete playlist;
     delete player;
     delete ui;
+    delete aboutAction;
+    delete wizardAction;
     delete hideAction;
     delete restoreAction;
     delete stopAction;
@@ -291,6 +306,33 @@ void MainWindow::messageClicked()
         on_pbAction_clicked();
         onRestore();
     }
+}
+
+void MainWindow::onAboutClicked()
+{
+    // pushbutton's default look was too tightly wrapped around the text
+    auto msg = "Timer License: GPL V3.0\n"
+               "Using Qt framework from:\n"
+               "https://www.qt.io/";
+
+    auto css = "QPushButton { "
+                    "background-color: #212121 ;"
+                    "border: none;"
+                    "border-radius: 10px;"
+                    "padding: 8px;"
+                    "color: white;}";
+    auto *msgAbout = new QMessageBox(this);
+    msgAbout->setStyleSheet(css);
+    msgAbout->setWindowTitle("About Timer");
+    msgAbout->setIcon(QMessageBox::Information);
+    msgAbout->setText(msg);
+    msgAbout->setStandardButtons(QMessageBox::Ok);
+    msgAbout->setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
+    msgAbout->exec();
+
+    delete msgAbout;
+    msgAbout = nullptr;
 }
 
 void MainWindow::on_lnEd_returnPressed()

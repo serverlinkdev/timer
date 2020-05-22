@@ -56,10 +56,12 @@ private:
     QMediaPlaylist *playlist = nullptr;
 
     void createActions();
+    QAction *aboutAction = nullptr;
     QAction *hideAction = nullptr;
+    QAction *quitAction = nullptr;
     QAction *restoreAction = nullptr;
     QAction *stopAction = nullptr;
-    QAction *quitAction = nullptr;
+    QAction *wizardAction = nullptr;
 
     void createTrayIcon();
     QMenu *trayIconMenu = nullptr;
@@ -81,7 +83,7 @@ private:
 
 private slots:
     void slotDelayTimer();
-
+    void onAboutClicked();
     void on_pbAction_clicked();
     void on_lnEd_returnPressed();
 
