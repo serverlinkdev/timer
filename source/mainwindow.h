@@ -94,8 +94,6 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
 };
 
 #endif // MAINWINDOW_H

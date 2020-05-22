@@ -48,23 +48,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QMainWindow::closeEvent(event);
 }
 
-void MainWindow::contextMenuEvent(QContextMenuEvent *event)
-{
-    if (isRunning) return; // Do NOT handle change of sound file if active timer
-
-    contextMenu = new QMenu(this);
-
-    contextMenu->addAction("&Choose new alarm sound Wizard",
-                           this,
-                           SLOT(runSoundFilePickerWizard()));
-
-    contextMenu->exec(event->globalPos());
-
-    contextMenu->clear();
-    delete contextMenu;
-    contextMenu = nullptr;
-}
-
 void MainWindow::createActions()
 {
     aboutAction = new QAction("&About Timer", this);
@@ -498,8 +481,7 @@ void MainWindow::tweakUi()
     // text edits do not have a return key press event, so we'll make our own:
     ui->txtEdMsg->installEventFilter(this);
 
-    auto placeHolderText = "Type message and hit enter to start.\n"
-                           "HINT: Right click in window to change sound.";
+    auto placeHolderText = "Type message and hit enter to start.";
     ui->txtEdMsg->setPlaceholderText(placeHolderText);
 }
 
