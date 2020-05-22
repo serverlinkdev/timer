@@ -45,15 +45,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
     restoreAction->setDisabled(false);
 
     QMainWindow::closeEvent(event);
-//    QApplication::exit(0);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
     if (isRunning) return; // Do NOT handle change of sound file if active timer
+
     contextMenu = new QMenu(this);
 
-    contextMenu->addAction("&Choose new alarm sound Wizard", this,
+    contextMenu->addAction("&Choose new alarm sound Wizard",
+                           this,
                            SLOT(runSoundFilePickerWizard()));
 
     contextMenu->exec(event->globalPos());
@@ -70,13 +71,16 @@ void MainWindow::createActions()
             this, &MainWindow::hideMainWindow);
 
     restoreAction = new QAction(tr("&Restore"), this);
-    connect(restoreAction, &QAction::triggered, this, &MainWindow::onRestore);
+    connect(restoreAction, &QAction::triggered, this,
+            &MainWindow::onRestore);
 
     stopAction = new QAction(tr("&Stop Alarm"), this);
-    connect(stopAction, &QAction::triggered, this, &MainWindow::on_pbAction_clicked);
+    connect(stopAction, &QAction::triggered,
+            this, &MainWindow::on_pbAction_clicked);
 
     quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    connect(quitAction, &QAction::triggered,
+            qApp, &QCoreApplication::quit);
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -120,7 +124,6 @@ void MainWindow::createPlayer()
 {
     player = new QMediaPlayer(this, QMediaPlayer::StreamPlayback);
     playlist = new QMediaPlaylist();
-    // get user's sound file on startup
     createPlaylist();
     playlist->setPlaybackMode(QMediaPlaylist::Loop);
     player->setPlaylist(playlist);
@@ -136,6 +139,7 @@ void MainWindow::createPlaylist()
         playlist->addMedia(QUrl(soundFile));
         return;
     }
+
     playlist->addMedia(QMediaContent(QUrl::fromLocalFile(soundFile)));
 }
 
@@ -191,8 +195,7 @@ void MainWindow::createTrayIcon()
 void MainWindow::createWizard()
 {
     w = new Wizard(configFile, publisher, appName);
-    connect(w, &Wizard::soundFileChanged,
-            this, &MainWindow::changePlaylist);
+    connect(w, &Wizard::soundFileChanged, this, &MainWindow::changePlaylist);
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -228,6 +231,7 @@ void MainWindow::hideMainWindow()
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
+
     hide();
 }
 
@@ -447,7 +451,7 @@ void MainWindow::tweakUi()
     setWindowIcon(QIcon(icon));
 
     // we'll allow a timer for a full week's worth of minutes
-    ui->lnEd->setValidator(new QIntValidator(1,10080, this));
+    ui->lnEd->setValidator(new QIntValidator(1, 10080, this));
 
     // text edits do not have a return key press event, so we'll make our own:
     ui->txtEdMsg->installEventFilter(this);

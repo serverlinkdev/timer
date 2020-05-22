@@ -65,12 +65,12 @@ void Wizard::doWizard()
 
     QDialog::accept();
 
+    emit soundFileChanged();
+
     auto msg = "Please note: \n\n"
                "This program does not modify your registry (Windows).\n\n"
                "Your settings are saved in file:\n" + configFile + "\n\n"
                "GL HF!";
-
-    emit soundFileChanged();
 
     QMessageBox::information(this,
                              "Setup Complete!",
