@@ -94,11 +94,7 @@ void Wizard::on_pbBrowse_clicked()
                                              "Pick sound file",
                                              initialPath);
 
-        // user pressed esc when file dialog open so as to cancel. But the
-        // Qt file picker just clobbered the soundFileLocation var, it is empty
-        // Or can even hold a filename then they change their mind and hit esc
-        // as well.  So we want to honor their cancel event for these mulitiple
-        // ways of cancelling; so we'll write back the original
+        // user pressed esc when file dialog open so as to cancel.
         if (soundFileLocation.isEmpty())
         {
             ui->lblGeneral->setText("No changes will be made to your sound "
@@ -111,7 +107,7 @@ void Wizard::on_pbBrowse_clicked()
             ui->pbOK->setEnabled(true);
             return;
         }
-        else
+        else // select file then click cancel in file picker is here as well
         {
             ui->lblGeneral->setText("HINT:  You can run this wizard at any "
                                     "time later.\n\nWill now use the following "
