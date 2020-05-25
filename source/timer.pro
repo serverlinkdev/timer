@@ -27,10 +27,12 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
+        themepicker.cpp \
         wizard.cpp
 
 HEADERS += \
         mainwindow.h \
+        themepicker.h \
         wizard.h
 
 FORMS += \

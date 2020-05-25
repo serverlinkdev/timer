@@ -8,7 +8,9 @@
 #include <QMediaPlayer>
 #include <QSystemTrayIcon>
 #include <QTimer>
+#include <QStringList>
 
+#include "themepicker.h"
 #include "wizard.h"
 
 namespace Ui {
@@ -26,10 +28,21 @@ public:
                         QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void mgetCssStylesList();
+
+signals:
+    void sendCssStylesList(QStringList cssStylesList);
+
 private:
     enum ButtonColor { green, red };
 
-    QString css;
+    ThemePicker *t = nullptr;
+    void createThemePicker();
+
+    QString cssStyleSheet;
+    void getCssStyleSheet(const QString &themeName);
+    void setCssStyleSheet(const QString &themeName);
 
     bool eventFilter(QObject *watched, QEvent *event) override;
     Ui::MainWindow *ui=nullptr;
@@ -63,6 +76,7 @@ private:
     QAction *quitAction = nullptr;
     QAction *restoreAction = nullptr;
     QAction *stopAction = nullptr;
+    QAction *themeAction = nullptr;
     QAction *wizardAction = nullptr;
 
     void createTrayIcon();
@@ -83,8 +97,6 @@ private:
     Wizard *w = nullptr;
     QMenu *contextMenu = nullptr;
 
-    QString getCss();
-
 private slots:
     void slotDelayTimer();
     void onAboutClicked();
@@ -95,6 +107,8 @@ private slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void messageClicked();
     void runSoundFilePickerWizard();
+    void runThemePicker();
+
 
 protected:
     void closeEvent(QCloseEvent *event) override;

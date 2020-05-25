@@ -11,22 +11,6 @@
 #include <QTime>
 #include <QUrl>
 
-QString MainWindow::getCss()
-{
-//    QFile file(":/qss/darkTheme.qss");
-//    QFile file(":/qss/breezeDark.qss");
-//    QFile file(":/qss/xfce-dusk.qss");
-//    QFile file(":/qss/mona.qss");
-//    QFile file(":/qss/murrineGray.qss");
-//    QFile file(":/qss/numix-sx-full-dark.qss");
-//    QFile file(":/qss/adwaita-dark.qss");
-    QFile file(":/qss/steem.qss");
-    file.open(QFile::ReadOnly);
-    css  = QString::fromLatin1(file.readAll());
-
-    return css;
-}
-
 MainWindow::MainWindow(const QString &configFile,
                        const QString &publisher,
                        const QString &appName,
@@ -47,18 +31,12 @@ MainWindow::MainWindow(const QString &configFile,
 
     createDelayTimer();
     createPlayer();
+    createThemePicker();
     createWizard();
     ui->setupUi(this);
-    getCss();
-    qApp->setStyleSheet(css);
 
     tweakUi();
     tweakWindowFlags();
-
-    QDirIterator it(":/qss/", QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-    qDebug() << it.next();
-    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -92,6 +70,10 @@ void MainWindow::createActions()
     stopAction = new QAction("&Stop Alarm", this);
     connect(stopAction, &QAction::triggered,
             this, &MainWindow::on_pbAction_clicked);
+
+    themeAction = new QAction("&Theme Picker", this);
+    connect(themeAction, &QAction::triggered,
+            this, &MainWindow::runThemePicker);
 
     wizardAction = new QAction("Sound &File Picker", this);
     connect(wizardAction, &QAction::triggered,
@@ -165,10 +147,38 @@ void MainWindow::changePlaylist()
     createPlaylist();
 }
 
+void MainWindow::createThemePicker()
+{
+    t = new ThemePicker();
+
+    connect(t, &ThemePicker::getCssStylesList, this, &MainWindow::mgetCssStylesList);
+
+    connect(this, &MainWindow::sendCssStylesList,
+            t, &ThemePicker::recvCssStyles);
+
+    connect(t, &ThemePicker::setCssStyleStyleSheet, this, &MainWindow::setCssStyleSheet);
+}
+
+void MainWindow::mgetCssStylesList()
+{
+    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
+    QDirIterator it(":/qss/", QDirIterator::Subdirectories);
+    QStringList cssStylesList;
+    while (it.hasNext())
+    {
+        QFileInfo fileInfo(it.next());
+        cssStylesList << fileInfo.baseName();
+    }
+
+    emit sendCssStylesList(cssStylesList);
+}
+
 void MainWindow::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
     trayIconMenu->addAction(aboutAction);
+    trayIconMenu->addSeparator();
+    trayIconMenu->addAction(themeAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(wizardAction);
     trayIconMenu->addSeparator();
@@ -216,6 +226,13 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
 
     return QMainWindow::eventFilter(watched, event);
+}
+
+void MainWindow::getCssStyleSheet(const QString &themeName)
+{
+    QFile file(":/qss/" + themeName + ".qss");
+    file.open(QFile::ReadOnly);
+    cssStyleSheet  = QString::fromLatin1(file.readAll());
 }
 
 QString MainWindow::getSetting(const QString &someSetting) const
@@ -418,6 +435,11 @@ void MainWindow::runSoundFilePickerWizard()
     w->show();
 }
 
+void MainWindow::runThemePicker()
+{
+    t->show();
+}
+
 void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
 {
     QString cssButton;
@@ -440,6 +462,12 @@ void MainWindow::setIcon(QIcon icon)
 {
     trayIcon->setIcon(icon);
     setWindowIcon(icon);
+}
+
+void MainWindow::setCssStyleSheet(const QString &themeName)
+{
+    getCssStyleSheet(themeName);
+    qApp->setStyleSheet(cssStyleSheet);
 }
 
 void MainWindow::showAndSetActive()
@@ -470,6 +498,8 @@ void MainWindow::slotDelayTimer()
 
 void MainWindow::tweakUi()
 {
+    setCssStyleSheet("adwaita-dark");
+
     ui->lblStatus->setText("Habouji!");
     setButtonHoverColor(green);
 
