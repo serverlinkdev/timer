@@ -11,7 +11,7 @@
 #include <QStringList>
 
 #include "themepicker.h"
-#include "wizard.h"
+#include "soundpicker.h"
 
 namespace Ui {
 class MainWindow;
@@ -88,10 +88,10 @@ private:
     void tweakUi();
 
     void createThemePicker();
-    ThemePicker *t = nullptr;
+    ThemePicker *themePicker = nullptr;
 
-    void createWizard();
-    Wizard *w = nullptr;
+    void createSoundFilePicker();
+    SoundPicker *soundPicker = nullptr;
     QMenu *contextMenu = nullptr;
 
 private slots:

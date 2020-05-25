@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Wizard</class>
- <widget class="QDialog" name="Wizard">
+ <class>SoundPicker</class>
+ <widget class="QDialog" name="SoundPicker">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -41,7 +41,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Timer Wizard</string>
+          <string>Sound File Picker</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

@@ -32,7 +32,7 @@ MainWindow::MainWindow(const QString &configFile,
     createDelayTimer();
     createPlayer();
     createThemePicker();
-    createWizard();
+    createSoundFilePicker();
     ui->setupUi(this);
 
     tweakUi();
@@ -147,17 +147,25 @@ void MainWindow::changePlaylist()
     createPlaylist();
 }
 
+void MainWindow::createSoundFilePicker()
+{
+    soundPicker = new SoundPicker(configFile, publisher, appName);
+
+    connect(soundPicker, &SoundPicker::soundFileChanged,
+            this, &MainWindow::changePlaylist);
+}
+
 void MainWindow::createThemePicker()
 {
-    t = new ThemePicker();
+    themePicker = new ThemePicker();
 
-    connect(t, &ThemePicker::getThemesList,
+    connect(themePicker, &ThemePicker::getThemesList,
             this, &MainWindow::onGetThemesList);
 
     connect(this, &MainWindow::sendThemesList,
-            t, &ThemePicker::onSendThemesList);
+            themePicker, &ThemePicker::onSendThemesList);
 
-    connect(t, &ThemePicker::setCssStyleStyleSheet,
+    connect(themePicker, &ThemePicker::setCssStyleStyleSheet,
             this, &MainWindow::setCssStyleSheet);
 }
 
@@ -191,12 +199,6 @@ void MainWindow::createTrayIcon()
 
     trayIcon->show();
     trayIcon->showMessage("Timer", "Running in your tray", iconDef, 2000);
-}
-
-void MainWindow::createWizard()
-{
-    w = new Wizard(configFile, publisher, appName);
-    connect(w, &Wizard::soundFileChanged, this, &MainWindow::changePlaylist);
 }
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
@@ -261,7 +263,8 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 MainWindow::~MainWindow()
 {
-    delete w;
+    delete themePicker;
+    delete soundPicker;
     delete delayTimer;
     delete playlist;
     delete player;
@@ -298,7 +301,6 @@ void MainWindow::messageClicked()
 
 void MainWindow::onAboutClicked()
 {
-    // pushbutton's default look was too tightly wrapped around the text
     auto msg = "Timer License: GPL V3.0\n"
                "https://github.com/serverlinkdev/timer\n"
                "Using Qt framework from:\n"
@@ -319,7 +321,6 @@ void MainWindow::onAboutClicked()
 
 void MainWindow::onGetThemesList()
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
     QDirIterator it(":/qss/", QDirIterator::Subdirectories);
     QStringList themesList;
     while (it.hasNext())
@@ -427,12 +428,12 @@ void MainWindow::onRestore()
 
 void MainWindow::onSoundFilePickerClicked()
 {
-    w->show();
+    soundPicker->show();
 }
 
 void MainWindow::onThemePickerClicked()
 {
-    t->show();
+    themePicker->show();
 }
 
 void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)

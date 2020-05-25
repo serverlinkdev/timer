@@ -1,21 +1,23 @@
-#ifndef WIZARD_H
-#define WIZARD_H
+#ifndef SOUNDPICKER_H
+#define SOUNDPICKER_H
 
 #include <QDialog>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class Wizard; }
+namespace Ui {
+class SoundPicker;
+}
 QT_END_NAMESPACE
 
-class Wizard : public QDialog
+class SoundPicker : public QDialog
 {
     Q_OBJECT
 
 public:
-    Wizard(const QString &configFile, const QString &publisher,
+    SoundPicker(const QString &configFile, const QString &publisher,
            const QString &appName, QDialog *parent = nullptr);
 
-    ~Wizard();
+    ~SoundPicker();
 
 signals:
     void soundFileChanged();
@@ -27,7 +29,7 @@ private:
     const QString configFile;
     const QString publisher;
     const QString appName;
-    Ui::Wizard *ui;
+    Ui::SoundPicker *ui;
     bool soundFileLocationDone;
     QString originalSoundFileLocation;
     void writeSettings(const QString &key, const QString &value);
@@ -42,4 +44,4 @@ private slots:
 
 
 };
-#endif // WIZARD_H
+#endif // SOUNDPICKER_H

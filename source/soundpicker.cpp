@@ -1,26 +1,21 @@
-#include "wizard.h"
-#include "ui_wizard.h"
+#include "soundpicker.h"
+#include "ui_soundpicker.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStandardPaths>
 
-Wizard::Wizard(const QString &configFile, const QString &publisher,
+SoundPicker::SoundPicker(const QString &configFile, const QString &publisher,
                const QString &appName, QDialog *parent) :
     QDialog(parent),
     configFile(configFile),
     publisher(publisher),
     appName(appName),
-    ui(new Ui::Wizard),
+    ui(new Ui::SoundPicker),
     soundFileLocationDone(false)
 {
-    // The QDialog does not pick up our font size at all plus we want bigger
-//    QFont f;
-//    f.setPointSize(14);
-//    QApplication::setFont(f);
-
     ui->setupUi(this);
-    setWindowTitle("Wizard");
+    setWindowTitle("Sound Picker");
     setWindowIcon(QIcon(":/images/stopwatch.png"));
 
     auto tmp = getSetting("soundFileLocation");
@@ -36,7 +31,7 @@ Wizard::Wizard(const QString &configFile, const QString &publisher,
     doWizard();
 }
 
-QString Wizard::getSetting(const QString &someSetting) const
+QString SoundPicker::getSetting(const QString &someSetting) const
 {
     QSettings settings(QSettings::IniFormat,
                        QSettings::UserScope,
@@ -50,7 +45,7 @@ QString Wizard::getSetting(const QString &someSetting) const
 // User clicking ok/next brings us back where the func preps the UI for the
 // next config option.  When there are no more to do, well we just close
 // the wizard window.
-void Wizard::doWizard()
+void SoundPicker::doWizard()
 {
     if (!soundFileLocationDone)
     {
@@ -81,7 +76,7 @@ void Wizard::doWizard()
     resetMemberVarsForNextRun();
 }
 
-void Wizard::on_pbBrowse_clicked()
+void SoundPicker::on_pbBrowse_clicked()
 {
     if (!soundFileLocationDone)
     {
@@ -123,17 +118,17 @@ void Wizard::on_pbBrowse_clicked()
     }
 }
 
-void Wizard::on_pbCancel_clicked()
+void SoundPicker::on_pbCancel_clicked()
 {
-    Wizard::reject();
+    SoundPicker::reject();
 }
 
-void Wizard::on_pbOK_clicked()
+void SoundPicker::on_pbOK_clicked()
 {
     doWizard();
 }
 
-void Wizard::reject()
+void SoundPicker::reject()
 {
     // There is 3 ways a user can cancel and all must be treated differently.
     // This handles closing the window X and hitting cancel button
@@ -143,7 +138,7 @@ void Wizard::reject()
     QDialog::reject();
 }
 
-void Wizard::resetMemberVarsForNextRun()
+void SoundPicker::resetMemberVarsForNextRun()
 {
     // in case the user wants to run the wizard more than once, let's clean
     // our slate instead of doing 'new' over and over in mainwindow and
@@ -153,13 +148,13 @@ void Wizard::resetMemberVarsForNextRun()
     doWizard(); // when called with above as false, it just resets the labels
 }
 
-Wizard::~Wizard()
+SoundPicker::~SoundPicker()
 {
     disconnect();
     delete ui;
 }
 
-void Wizard::writeSettings(const QString &key, const QString &value)
+void SoundPicker::writeSettings(const QString &key, const QString &value)
 {
     QSettings settings(QSettings::IniFormat,
                        QSettings::UserScope,

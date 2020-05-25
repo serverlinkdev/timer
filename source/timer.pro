@@ -27,17 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        themepicker.cpp \
-        wizard.cpp
+        soundpicker.cpp \
+        themepicker.cpp
 
 HEADERS += \
         mainwindow.h \
-        themepicker.h \
-        wizard.h
+        soundpicker.h \
+        themepicker.h
 
 FORMS += \
         mainwindow.ui \
-        wizard.ui
+        soundpicker.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
