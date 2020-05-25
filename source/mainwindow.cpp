@@ -73,11 +73,11 @@ void MainWindow::createActions()
 
     themeAction = new QAction("&Theme Picker", this);
     connect(themeAction, &QAction::triggered,
-            this, &MainWindow::runThemePicker);
+            this, &MainWindow::onThemePickerClicked);
 
     wizardAction = new QAction("Sound &File Picker", this);
     connect(wizardAction, &QAction::triggered,
-            this, &MainWindow::runSoundFilePickerWizard);
+            this, &MainWindow::onSoundFilePickerClicked);
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -151,26 +151,28 @@ void MainWindow::createThemePicker()
 {
     t = new ThemePicker();
 
-    connect(t, &ThemePicker::getCssStylesList, this, &MainWindow::mgetCssStylesList);
+    connect(t, &ThemePicker::getThemesList,
+            this, &MainWindow::onGetThemesList);
 
-    connect(this, &MainWindow::sendCssStylesList,
-            t, &ThemePicker::recvCssStyles);
+    connect(this, &MainWindow::sendThemesList,
+            t, &ThemePicker::onSendThemesList);
 
-    connect(t, &ThemePicker::setCssStyleStyleSheet, this, &MainWindow::setCssStyleSheet);
+    connect(t, &ThemePicker::setCssStyleStyleSheet,
+            this, &MainWindow::setCssStyleSheet);
 }
 
-void MainWindow::mgetCssStylesList()
+void MainWindow::onGetThemesList()
 {
     qDebug().noquote() << "Call: " << Q_FUNC_INFO;
     QDirIterator it(":/qss/", QDirIterator::Subdirectories);
-    QStringList cssStylesList;
+    QStringList themesList;
     while (it.hasNext())
     {
         QFileInfo fileInfo(it.next());
-        cssStylesList << fileInfo.baseName();
+        themesList << fileInfo.baseName();
     }
 
-    emit sendCssStylesList(cssStylesList);
+    emit sendThemesList(themesList);
 }
 
 void MainWindow::createTrayIcon()
@@ -226,13 +228,6 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     }
 
     return QMainWindow::eventFilter(watched, event);
-}
-
-void MainWindow::getCssStyleSheet(const QString &themeName)
-{
-    QFile file(":/qss/" + themeName + ".qss");
-    file.open(QFile::ReadOnly);
-    cssStyleSheet  = QString::fromLatin1(file.readAll());
 }
 
 QString MainWindow::getSetting(const QString &someSetting) const
@@ -430,12 +425,12 @@ void MainWindow::onRestore()
     // move(mainwindowScreenCoordinates);
 }
 
-void MainWindow::runSoundFilePickerWizard()
+void MainWindow::onSoundFilePickerClicked()
 {
     w->show();
 }
 
-void MainWindow::runThemePicker()
+void MainWindow::onThemePickerClicked()
 {
     t->show();
 }
@@ -458,16 +453,18 @@ void MainWindow::setButtonHoverColor(MainWindow::ButtonColor color)
     ui->pbAction->setStyleSheet(cssButton);
 }
 
+void MainWindow::setCssStyleSheet(const QString &themeName)
+{
+    QFile file(":/qss/" + themeName + ".qss");
+    file.open(QFile::ReadOnly);
+    auto cssStyleSheet = QString::fromLatin1(file.readAll());
+    qApp->setStyleSheet(cssStyleSheet);
+}
+
 void MainWindow::setIcon(QIcon icon)
 {
     trayIcon->setIcon(icon);
     setWindowIcon(icon);
-}
-
-void MainWindow::setCssStyleSheet(const QString &themeName)
-{
-    getCssStyleSheet(themeName);
-    qApp->setStyleSheet(cssStyleSheet);
 }
 
 void MainWindow::showAndSetActive()

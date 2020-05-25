@@ -1,9 +1,9 @@
 #ifndef THEMEPICKER_H
 #define THEMEPICKER_H
 
+#include <QComboBox>
 #include <QObject>
 #include <QDialog>
-#include <QComboBox>
 
 class ThemePicker : public QDialog
 {
@@ -13,20 +13,17 @@ public:
     ~ThemePicker();
 
 signals:
-    void getCssStylesList();
-    void cssStylesStringListUpdated(QStringList cssStylesStringList);
+    void getThemesList();
     void setCssStyleStyleSheet(QString themeName);
 
 public slots:
-    void recvCssStyles(QStringList cssStylesList);
+    void onSendThemesList(QStringList cssStylesList);
 
 private:
     QComboBox *box = nullptr;
-    void populateCombobox(QStringList cssStylesStringList);
-    QStringList cssStylesStringList;
-    void setCssStylesList(QStringList cssStylesList);
+    void populateCombobox(QStringList cssStylesList);
+    void onComboBoxItemActivated();
 
-    // QWidget interface
 protected:
     void showEvent(QShowEvent *event) override;
 };

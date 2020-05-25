@@ -5,58 +5,48 @@
 
 ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
+    setWindowTitle("Theme Picker");
+
     auto *layout = new QVBoxLayout(this);
     box = new QComboBox(this);
-    emit getCssStylesList();
     layout->addWidget(box);
     setLayout(layout);
-    setWindowTitle("Theme Picker");
-    connect(this, &ThemePicker::cssStylesStringListUpdated,
-            this, &ThemePicker::populateCombobox);
+
     connect(box, QOverload<int>::of(&QComboBox::activated),
-          [=](int index){
-        /* ... */
-        qDebug().noquote() << "was actviated";
-        qDebug().noquote() << box->currentText();
-        emit setCssStyleStyleSheet(box->currentText());
-    });
+            this, &ThemePicker::onComboBoxItemActivated);
 }
 
-void ThemePicker::populateCombobox(QStringList cssStylesStringList)
+void ThemePicker::onComboBoxItemActivated()
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
+    // Tell mainwindow to set this style
+    emit setCssStyleStyleSheet(box->currentText());
+}
+
+void ThemePicker::populateCombobox(QStringList cssStylesList)
+{
     box->clear();
 
-    cssStylesStringList.sort();
+    cssStylesList.sort();
 
-    for (const auto itm : cssStylesStringList)
+    for (const auto itm : cssStylesList)
     {
         box->addItem(itm);
     }
 }
 
-void ThemePicker::recvCssStyles(QStringList cssStylesList)
+void ThemePicker::onSendThemesList(QStringList cssStylesList)
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
-    setCssStylesList(cssStylesList);
+    // do something with data sent by mainwindow
+    populateCombobox(cssStylesList);
 }
 
-void ThemePicker::setCssStylesList(QStringList cssStylesList)
+void ThemePicker::showEvent(QShowEvent *event)
 {
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
-    cssStylesStringList = cssStylesList;
-    emit cssStylesStringListUpdated(cssStylesStringList);
+    // ask mainwindow for data
+    emit getThemesList();
+    QDialog::showEvent(event);
 }
 
 ThemePicker::~ThemePicker()
 {
-}
-
-
-void ThemePicker::showEvent(QShowEvent *event)
-{
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
-    emit getCssStylesList();
-    QDialog::showEvent(event);
 }

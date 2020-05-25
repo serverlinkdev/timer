@@ -29,20 +29,13 @@ public:
     ~MainWindow();
 
 public slots:
-    void mgetCssStylesList();
+    void onGetThemesList();
 
 signals:
-    void sendCssStylesList(QStringList cssStylesList);
+    void sendThemesList(QStringList cssStylesList);
 
 private:
     enum ButtonColor { green, red };
-
-    ThemePicker *t = nullptr;
-    void createThemePicker();
-
-    QString cssStyleSheet;
-    void getCssStyleSheet(const QString &themeName);
-    void setCssStyleSheet(const QString &themeName);
 
     bool eventFilter(QObject *watched, QEvent *event) override;
     Ui::MainWindow *ui=nullptr;
@@ -58,6 +51,7 @@ private:
     void writeSettings(const QString &key,
                        const QString &value);
 
+    void setCssStyleSheet(const QString &themeName);
     void createPalette();
 
     void createDelayTimer();
@@ -93,22 +87,25 @@ private:
     void tweakWindowFlags();
     void tweakUi();
 
+    void createThemePicker();
+    ThemePicker *t = nullptr;
+
     void createWizard();
     Wizard *w = nullptr;
     QMenu *contextMenu = nullptr;
 
 private slots:
     void slotDelayTimer();
-    void onAboutClicked();
     void on_pbAction_clicked();
     void on_lnEd_returnPressed();
 
     void setIcon(QIcon icon);
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
     void messageClicked();
-    void runSoundFilePickerWizard();
-    void runThemePicker();
 
+    void onAboutClicked();
+    void onSoundFilePickerClicked();
+    void onThemePickerClicked();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
