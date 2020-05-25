@@ -66,9 +66,7 @@ void SoundPicker::doWizard()
                "This program does not modify your registry (Windows).\n\n"
                "Your settings are saved in file:\n" + configFile + "\n\n"
                "GL HF!";
-//    QFont f;
-//    f.setPointSize(14);
-//    QApplication::setFont(f);
+
     QMessageBox::information(this,
                              "Setup Complete!",
                              msg);
@@ -132,6 +130,7 @@ void SoundPicker::reject()
 {
     // There is 3 ways a user can cancel and all must be treated differently.
     // This handles closing the window X and hitting cancel button
+
     writeSettings("soundFileLocation", originalSoundFileLocation);
     resetMemberVarsForNextRun();
     emit soundFileChanged();

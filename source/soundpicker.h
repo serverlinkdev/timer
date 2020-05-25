@@ -15,7 +15,7 @@ class SoundPicker : public QDialog
 
 public:
     SoundPicker(const QString &configFile, const QString &publisher,
-           const QString &appName, QDialog *parent = nullptr);
+                const QString &appName, QDialog *parent = nullptr);
 
     ~SoundPicker();
 
@@ -41,7 +41,5 @@ private slots:
     void on_pbBrowse_clicked();
     void on_pbCancel_clicked();
     void on_pbOK_clicked();
-
-
 };
 #endif // SOUNDPICKER_H

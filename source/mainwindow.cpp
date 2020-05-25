@@ -159,11 +159,11 @@ void MainWindow::createThemePicker()
 {
     themePicker = new ThemePicker();
 
-    connect(themePicker, &ThemePicker::getThemesList,
-            this, &MainWindow::onGetThemesList);
-
     connect(this, &MainWindow::sendThemesList,
             themePicker, &ThemePicker::onSendThemesList);
+
+    connect(themePicker, &ThemePicker::getThemesList,
+            this, &MainWindow::onGetThemesList);
 
     connect(themePicker, &ThemePicker::setCssStyleStyleSheet,
             this, &MainWindow::setCssStyleSheet);
