@@ -71,13 +71,13 @@ void MainWindow::createActions()
     connect(stopAction, &QAction::triggered,
             this, &MainWindow::on_pbAction_clicked);
 
+    soundAction = new QAction("Sound &File Picker", this);
+    connect(soundAction, &QAction::triggered,
+            this, &MainWindow::onSoundFilePickerClicked);
+
     themeAction = new QAction("&Theme Picker", this);
     connect(themeAction, &QAction::triggered,
             this, &MainWindow::onThemePickerClicked);
-
-    wizardAction = new QAction("Sound &File Picker", this);
-    connect(wizardAction, &QAction::triggered,
-            this, &MainWindow::onSoundFilePickerClicked);
 
     hideAction->setDisabled(true);
     restoreAction->setDisabled(false);
@@ -161,20 +161,6 @@ void MainWindow::createThemePicker()
             this, &MainWindow::setCssStyleSheet);
 }
 
-void MainWindow::onGetThemesList()
-{
-    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
-    QDirIterator it(":/qss/", QDirIterator::Subdirectories);
-    QStringList themesList;
-    while (it.hasNext())
-    {
-        QFileInfo fileInfo(it.next());
-        themesList << fileInfo.baseName();
-    }
-
-    emit sendThemesList(themesList);
-}
-
 void MainWindow::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
@@ -182,7 +168,7 @@ void MainWindow::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(themeAction);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(wizardAction);
+    trayIconMenu->addAction(soundAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(hideAction);
     trayIconMenu->addAction(restoreAction);
@@ -281,7 +267,7 @@ MainWindow::~MainWindow()
     delete player;
     delete ui;
     delete aboutAction;
-    delete wizardAction;
+    delete soundAction;
     delete hideAction;
     delete restoreAction;
     delete stopAction;
@@ -329,6 +315,20 @@ void MainWindow::onAboutClicked()
 
     delete msgAbout;
     msgAbout = nullptr;
+}
+
+void MainWindow::onGetThemesList()
+{
+    qDebug().noquote() << "Call: " << Q_FUNC_INFO;
+    QDirIterator it(":/qss/", QDirIterator::Subdirectories);
+    QStringList themesList;
+    while (it.hasNext())
+    {
+        QFileInfo fileInfo(it.next());
+        themesList << fileInfo.baseName();
+    }
+
+    emit sendThemesList(themesList);
 }
 
 void MainWindow::on_lnEd_returnPressed()

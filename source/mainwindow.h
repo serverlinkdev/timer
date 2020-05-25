@@ -69,9 +69,9 @@ private:
     QAction *hideAction = nullptr;
     QAction *quitAction = nullptr;
     QAction *restoreAction = nullptr;
+    QAction *soundAction = nullptr;
     QAction *stopAction = nullptr;
     QAction *themeAction = nullptr;
-    QAction *wizardAction = nullptr;
 
     void createTrayIcon();
     QMenu *trayIconMenu = nullptr;
