@@ -46,3 +46,5 @@ RESOURCES += \
     resources.qrc
 
 RC_FILE = qt-timer.rc
+
+DISTFILES +=

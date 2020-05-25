@@ -5,5 +5,13 @@
         <file>stopwatch.ico</file>
         <file>images/stopwatch-expired.png</file>
         <file>images/stopwatch-running.png</file>
+        <file>qss/darkTheme.qss</file>
+        <file>qss/breezeDark.qss</file>
+        <file>qss/xfce-dusk.qss</file>
+        <file>qss/mona.qss</file>
+        <file>qss/murrineGray.qss</file>
+        <file>qss/numix-sx-full-dark.qss</file>
+        <file>qss/adwaita-dark.qss</file>
+        <file>qss/steem.qss</file>
     </qresource>
 </RCC>

@@ -29,6 +29,8 @@ public:
 private:
     enum ButtonColor { green, red };
 
+    QString css;
+
     bool eventFilter(QObject *watched, QEvent *event) override;
     Ui::MainWindow *ui=nullptr;
     QString configFile;
@@ -80,6 +82,8 @@ private:
     void createWizard();
     Wizard *w = nullptr;
     QMenu *contextMenu = nullptr;
+
+    QString getCss();
 
 private slots:
     void slotDelayTimer();

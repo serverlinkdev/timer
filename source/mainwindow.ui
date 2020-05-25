@@ -19,18 +19,7 @@
    <string>Timer</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QLabel{
-color: white;
-}
-QLineEdit{
-color:white;
-}
-QPushButton{
-background-color: rgb(33,33,33);
-border-radius: 10px;
-color: white;
-}
-
+   <string notr="true">
 </string>
   </property>
   <widget class="QWidget" name="centralWidget">

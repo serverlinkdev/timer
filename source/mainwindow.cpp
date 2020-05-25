@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDateTime>
+#include <QDirIterator>
 #include <QEvent>
 #include <QIntValidator>
 #include <QMediaPlaylist>
@@ -9,6 +10,22 @@
 #include <QSettings>
 #include <QTime>
 #include <QUrl>
+
+QString MainWindow::getCss()
+{
+//    QFile file(":/qss/darkTheme.qss");
+//    QFile file(":/qss/breezeDark.qss");
+//    QFile file(":/qss/xfce-dusk.qss");
+//    QFile file(":/qss/mona.qss");
+//    QFile file(":/qss/murrineGray.qss");
+//    QFile file(":/qss/numix-sx-full-dark.qss");
+//    QFile file(":/qss/adwaita-dark.qss");
+    QFile file(":/qss/steem.qss");
+    file.open(QFile::ReadOnly);
+    css  = QString::fromLatin1(file.readAll());
+
+    return css;
+}
 
 MainWindow::MainWindow(const QString &configFile,
                        const QString &publisher,
@@ -24,17 +41,24 @@ MainWindow::MainWindow(const QString &configFile,
     mainwindowWidth(177),
     factorySoundFile("qrc:/sound/pop.wav")
 {
-    createPalette();
+//    createPalette();
     createActions();
     createTrayIcon();
+
     createDelayTimer();
     createPlayer();
     createWizard();
-
     ui->setupUi(this);
+    getCss();
+    qApp->setStyleSheet(css);
 
     tweakUi();
     tweakWindowFlags();
+
+    QDirIterator it(":/qss/", QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+    qDebug() << it.next();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -96,6 +120,7 @@ void MainWindow::createPalette()
 
     // this item has inconsistent behavior tween 5.12 and 5.14.  lesser of two
     // evils is to set this here and set stylesheet special for the tray
+    // this is the hover color of items in the menu
     palette.setColor(QPalette::Base, QColor(33,33,33));
 
     // the trays normal text color
@@ -165,24 +190,7 @@ void MainWindow::createTrayIcon()
             this, &MainWindow::messageClicked);
     trayIcon->setToolTip("Not running a timer");
 
-    // Tray theming is diff in 5.12 & 5.14 ; we'll set the tray manualy
-    // so it will behave the same in both versions
-    auto css =
-                /* this is menu background color */
-                "QMenu {"
-                    "color: white;"
-                    "background-color: #36393F;}"
 
-                /* this is mouse over colors for the context menu */
-                "QMenu::item:selected {"
-                    "background-color: #212121;}"
-
-                /* this is colors when an item is disabled */
-                "QMenu::item::disabled {"
-                    "color: #858A96;"
-                    "background-color: #36393F;}";
-
-    trayIconMenu->setStyleSheet(css);
     trayIcon->show();
     trayIcon->showMessage("Timer", "Running in your tray", iconDef, 2000);
 }
@@ -298,14 +306,7 @@ void MainWindow::onAboutClicked()
                "Using Qt framework from:\n"
                "https://www.qt.io/";
 
-    auto css = "QPushButton { "
-                    "background-color: #212121 ;"
-                    "border: none;"
-                    "border-radius: 10px;"
-                    "padding: 8px;"
-                    "color: white;}";
     auto *msgAbout = new QMessageBox(this);
-    msgAbout->setStyleSheet(css);
     msgAbout->setWindowTitle("About Timer");
     msgAbout->setIcon(QMessageBox::Information);
     msgAbout->setText(msg);

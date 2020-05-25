@@ -109,6 +109,9 @@
          <property name="text">
           <string>Browse ...</string>
          </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -138,6 +141,9 @@
          <property name="text">
           <string>Ok</string>
          </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -153,6 +159,9 @@
          </property>
          <property name="text">
           <string>Cancel</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
          </property>
         </widget>
        </item>

@@ -15,9 +15,9 @@ Wizard::Wizard(const QString &configFile, const QString &publisher,
     soundFileLocationDone(false)
 {
     // The QDialog does not pick up our font size at all plus we want bigger
-    QFont f;
-    f.setPointSize(14);
-    QApplication::setFont(f);
+//    QFont f;
+//    f.setPointSize(14);
+//    QApplication::setFont(f);
 
     ui->setupUi(this);
     setWindowTitle("Wizard");
@@ -71,7 +71,9 @@ void Wizard::doWizard()
                "This program does not modify your registry (Windows).\n\n"
                "Your settings are saved in file:\n" + configFile + "\n\n"
                "GL HF!";
-
+//    QFont f;
+//    f.setPointSize(14);
+//    QApplication::setFont(f);
     QMessageBox::information(this,
                              "Setup Complete!",
                              msg);

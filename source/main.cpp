@@ -15,7 +15,11 @@ void createConfigFile(QSettings &settings,
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+// This breaks GNU Linux users the ability to theme the application at all
+#ifdef WIN32
     QApplication::setStyle(QStyleFactory::create("Fusion"));
+#endif
 
     QApplication a(argc, argv);
 
