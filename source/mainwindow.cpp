@@ -496,7 +496,7 @@ void MainWindow::slotDelayTimer()
 
 void MainWindow::tweakUi()
 {
-    setCssStyleSheet("adwaita-dark");
+    setCssStyleSheet("Adwaita Dark");
 
     ui->lblStatus->setText("Habouji!");
     setButtonHoverColor(green);
