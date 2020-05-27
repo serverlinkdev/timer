@@ -12,5 +12,6 @@
         <file>qss/Numix SX Full Dark.qss</file>
         <file>qss/Adwaita Dark.qss</file>
         <file>qss/Steam.qss</file>
+        <file>qss/None.qss</file>
     </qresource>
 </RCC>

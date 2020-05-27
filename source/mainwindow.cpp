@@ -506,10 +506,8 @@ void MainWindow::tweakUi()
     {
         theme = "Dark";
         setCssStyleSheet("Dark");
-        writeSettings("theme","Dark");
     }
-
-    if (theme != "none") // allow users to have no theme
+    else
     {
         setCssStyleSheet(theme);
     }
