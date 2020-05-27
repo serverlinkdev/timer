@@ -462,6 +462,7 @@ void MainWindow::setCssStyleSheet(const QString &themeName)
     file.open(QFile::ReadOnly);
     auto cssStyleSheet = QString::fromLatin1(file.readAll());
     qApp->setStyleSheet(cssStyleSheet);
+    writeSettings("theme", themeName);
 }
 
 void MainWindow::setIcon(QIcon icon)
@@ -498,7 +499,20 @@ void MainWindow::slotDelayTimer()
 
 void MainWindow::tweakUi()
 {
-    setCssStyleSheet("Dark");
+    QString theme = getSetting("theme");
+
+    // first run of app, or user rm's config file, or delete's line in config
+    if (theme.isEmpty())
+    {
+        theme = "Dark";
+        setCssStyleSheet("Dark");
+        writeSettings("theme","Dark");
+    }
+
+    if (theme != "none") // allow users to have no theme
+    {
+        setCssStyleSheet(theme);
+    }
 
     ui->lblStatus->setText("Habouji!");
     setButtonHoverColor(green);
@@ -536,4 +550,13 @@ void MainWindow::updateMainwindowMemberVars()
     mainwindowScreenCoordinates = parentWidget()->mapFromGlobal(pos());
 }
 
+void MainWindow::writeSettings(const QString &key, const QString &value)
+{
+    QSettings settings(QSettings::IniFormat,
+                       QSettings::UserScope,
+                       publisher,
+                       appName);
+
+    return settings.setValue(key, value);
+}
 
