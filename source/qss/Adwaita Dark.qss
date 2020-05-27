@@ -69,3 +69,13 @@ QDialog, QPushButton:focus{
 
 QTooltip{
     background-color: green;}
+
+QFileDialog QWidget {
+    background-color: #232729;
+    color: white;}
+
+QComboBox, QListView {
+    background-color: #33393b;
+    color: white;
+    selection-color: white;
+    selection-background-color: #215d9c;}

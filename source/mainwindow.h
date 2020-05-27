@@ -6,12 +6,12 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMediaPlayer>
+#include <QStringList>
 #include <QSystemTrayIcon>
 #include <QTimer>
-#include <QStringList>
 
-#include "themepicker.h"
 #include "soundpicker.h"
+#include "themepicker.h"
 
 namespace Ui {
 class MainWindow;

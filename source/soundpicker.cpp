@@ -6,7 +6,7 @@
 #include <QStandardPaths>
 
 SoundPicker::SoundPicker(const QString &configFile, const QString &publisher,
-               const QString &appName, QDialog *parent) :
+                         const QString &appName, QDialog *parent) :
     QDialog(parent),
     configFile(configFile),
     publisher(publisher),
@@ -29,16 +29,6 @@ SoundPicker::SoundPicker(const QString &configFile, const QString &publisher,
     }
 
     doWizard();
-}
-
-QString SoundPicker::getSetting(const QString &someSetting) const
-{
-    QSettings settings(QSettings::IniFormat,
-                       QSettings::UserScope,
-                       publisher,
-                       appName);
-
-    return settings.value(someSetting).toString();
 }
 
 // So this func will prepare the UI for its respective config option.
@@ -74,6 +64,18 @@ void SoundPicker::doWizard()
     resetMemberVarsForNextRun();
 }
 
+QString SoundPicker::getSetting(const QString &someSetting) const
+{
+    QSettings settings(QSettings::IniFormat,
+                       QSettings::UserScope,
+                       publisher,
+                       appName);
+
+    return settings.value(someSetting).toString();
+}
+
+
+
 void SoundPicker::on_pbBrowse_clicked()
 {
     if (!soundFileLocationDone)
@@ -87,9 +89,13 @@ void SoundPicker::on_pbBrowse_clicked()
         auto soundFileLocation =
                 QFileDialog::getOpenFileName(this,
                                              "Pick sound file",
-                                             initialPath);
+                                             initialPath,
+                                             0,
+                                             0,
+                                             QFileDialog::DontUseNativeDialog);
 
-        // user pressed esc when file dialog open so as to cancel.
+        // user pressed esc when file dialog open so as to cancel,
+        // or select file then click cancel in file picker is here as well
         if (soundFileLocation.isEmpty())
         {
             ui->lblGeneral->setText("No changes will be made to your sound "
@@ -102,8 +108,7 @@ void SoundPicker::on_pbBrowse_clicked()
             ui->pbOK->setEnabled(true);
             return;
         }
-        else // select file then click cancel in file picker is here as well
-        {
+        else         {
             ui->lblGeneral->setText("HINT:  You can run this wizard at any "
                                     "time later.\n\nWill now use the following "
                                     "sound file for alarms: ");

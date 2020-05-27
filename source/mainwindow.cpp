@@ -37,6 +37,9 @@ MainWindow::MainWindow(const QString &configFile,
 
     tweakUi();
     tweakWindowFlags();
+
+    //TODO
+    onThemePickerClicked();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -129,7 +132,7 @@ void MainWindow::createPlayer()
 
 void MainWindow::createPlaylist()
 {
-    QString soundFile = getSetting("soundFileLocation");
+    auto soundFile = getSetting("soundFileLocation");
 
     if (soundFile.isEmpty() || soundFile == "FACTORY")
     {
@@ -195,7 +198,6 @@ void MainWindow::createTrayIcon()
     connect(trayIcon, &QSystemTrayIcon::messageClicked,
             this, &MainWindow::messageClicked);
     trayIcon->setToolTip("Not running a timer");
-
 
     trayIcon->show();
     trayIcon->showMessage("Timer", "Running in your tray", iconDef, 2000);
@@ -342,22 +344,22 @@ void MainWindow::on_pbAction_clicked()
     if ((!delayTimer->isActive()) && !isRunning) // start
     {
         isRunning=true;
-        const int val = ui->lnEd->text().toInt();
+        const auto val = ui->lnEd->text().toInt();
         if (val==0) return;
         ui->lnEd->setReadOnly(true);
-        const int delay = val * 60000;
+        const auto delay = val * 60000;
         delayTimer->setSingleShot(true);
         delayTimer->start(delay);
 
-        const QTime now = QTime::currentTime();
-        const QString nowShort = now.toString("hh:mm");
-        const QTime later = now.addSecs(val*60);
-        const QString laterShort=later.toString("hh:mm");
+        const auto now = QTime::currentTime();
+        const auto nowShort = now.toString("hh:mm");
+        const auto later = now.addSecs(val*60);
+        const auto laterShort=later.toString("hh:mm");
         ui->lblStatus->setText("Timer ends ~ " + laterShort + " ");
         setWindowTitle(laterShort + " Timer ends");
 
         ui->txtEdMsg->setReadOnly(true);
-        QString userMessage = ui->txtEdMsg->toPlainText();
+        auto userMessage = ui->txtEdMsg->toPlainText();
         if (userMessage.length()==0) userMessage = "";
         trayIcon->setToolTip(userMessage + " - Timer ends ~ " + laterShort);
         QIcon iconRun(":/images/stopwatch-running");
@@ -376,7 +378,7 @@ void MainWindow::on_pbAction_clicked()
         player->stop();
         delayTimer->stop();
 
-        const QString msg = "Not running a timer";
+        const auto msg = "Not running a timer";
         ui->lblStatus->setText(msg);
 
         setWindowTitle("Timer");
@@ -479,7 +481,7 @@ void MainWindow::showAndSetActive()
 
 void MainWindow::slotDelayTimer()
 {
-    const QString msg = "Timer Expired!";
+    const auto msg = "Timer Expired!";
     ui->lblStatus->setText(msg);
     setWindowTitle(msg);
     trayIcon->setToolTip(msg);
@@ -489,14 +491,14 @@ void MainWindow::slotDelayTimer()
     QIcon iconExpired(":/images/stopwatch-expired.png");
     setIcon(iconExpired);
 
-    QString userMessage = ui->txtEdMsg->toPlainText();
+    auto userMessage = ui->txtEdMsg->toPlainText();
     if (userMessage.length()==0) userMessage = "";
     trayIcon->showMessage(msg, userMessage, iconExpired, 2000);
 }
 
 void MainWindow::tweakUi()
 {
-    setCssStyleSheet("Adwaita Dark");
+    setCssStyleSheet("Dark");
 
     ui->lblStatus->setText("Habouji!");
     setButtonHoverColor(green);

@@ -23,10 +23,11 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        QMessageBox::critical(nullptr, QObject::tr("Systray"),
-                              QObject::tr("I couldn't detect any system tray "
-                                          "on this system."));
+    if (!QSystemTrayIcon::isSystemTrayAvailable())
+    {
+        QMessageBox::critical(nullptr,
+                              "Systray",
+                              "System tray not available on this system.");
         return 1;
     }
 
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
 
     QApplication::setQuitOnLastWindowClosed(false);
     MainWindow w(configFile, publisher, appName);
-
+    // no call to w.show() as we minimize to tray on start.
     return a.exec();
 }
 

@@ -2,8 +2,8 @@
 #define THEMEPICKER_H
 
 #include <QComboBox>
-#include <QObject>
 #include <QDialog>
+#include <QObject>
 
 class ThemePicker : public QDialog
 {
