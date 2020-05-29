@@ -6,6 +6,7 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QObject>
+#include <QSpacerItem>
 #include <QVBoxLayout>
 
 class ThemePicker : public QDialog
@@ -16,15 +17,18 @@ public:
     ~ThemePicker();
 
 signals:
+    void getCurrentTheme();
     void getThemesList();
     void setCssStyleStyleSheet(QString themeName);
 
 public slots:
+    void onCurrentTheme(QString theme);
     void onSendThemesList(QStringList cssStylesList);
 
 private:
     QLabel *lbl = nullptr;
     QComboBox *box = nullptr;
+    QSpacerItem *spacer = nullptr;
     QDialogButtonBox *btn = nullptr;
     QVBoxLayout *layout = nullptr;
 

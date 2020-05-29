@@ -8,29 +8,44 @@ ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
 
     lbl = new QLabel(this);
     lbl->setText("Please choose a color theme.\n\n"
-                 "All changes are immediately saved\n");
+                 "All changes are immediately\n"
+                 "applied and saved\n");
 
     box = new QComboBox(this);
+    connect(box, QOverload<int>::of(&QComboBox::activated),
+            this, &ThemePicker::onComboBoxItemActivated);
+
+    spacer = new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding);
 
     btn = new QDialogButtonBox(QDialogButtonBox::Ok);
-    layout = new QVBoxLayout(this);
     connect(btn, &QDialogButtonBox::accepted,
             [=](){hide();});
 
+    layout = new QVBoxLayout(this);
     layout->addWidget(lbl);
     layout->addWidget(box);
+    layout->addSpacerItem(spacer);
     layout->addWidget(btn);
 
     setLayout(layout);
-
-    connect(box, QOverload<int>::of(&QComboBox::activated),
-            this, &ThemePicker::onComboBoxItemActivated);
 }
 
 void ThemePicker::onComboBoxItemActivated()
 {
     // Tell mainwindow to set this style
     emit setCssStyleStyleSheet(box->currentText());
+}
+
+void ThemePicker::onCurrentTheme(QString theme)
+{
+    // set the users current theme as theme name shown when window first opens
+    box->setCurrentIndex(box->findText(theme));
+}
+
+void ThemePicker::onSendThemesList(QStringList cssStylesList)
+{
+    // do something with data sent by mainwindow
+    populateCombobox(cssStylesList);
 }
 
 void ThemePicker::populateCombobox(QStringList cssStylesList)
@@ -43,12 +58,8 @@ void ThemePicker::populateCombobox(QStringList cssStylesList)
     {
         box->addItem(itm);
     }
-}
 
-void ThemePicker::onSendThemesList(QStringList cssStylesList)
-{
-    // do something with data sent by mainwindow
-    populateCombobox(cssStylesList);
+    emit getCurrentTheme();
 }
 
 void ThemePicker::showEvent(QShowEvent *event)
@@ -60,8 +71,10 @@ void ThemePicker::showEvent(QShowEvent *event)
 
 ThemePicker::~ThemePicker()
 {
+    delete layout;
     delete btn;
+    delete spacer;
     delete box;
     delete lbl;
-    delete layout;
 }
+

@@ -170,6 +170,12 @@ void MainWindow::createThemePicker()
 
     connect(themePicker, &ThemePicker::setCssStyleStyleSheet,
             this, &MainWindow::setCssStyleSheet);
+
+    connect(themePicker, &ThemePicker::getCurrentTheme,
+            this, &MainWindow::onGetCurrentTheme);
+
+    connect(this, &MainWindow::currentTheme,
+            themePicker, &ThemePicker::onCurrentTheme);
 }
 
 void MainWindow::createTrayIcon()
@@ -319,6 +325,12 @@ void MainWindow::onAboutClicked()
 
     delete msgAbout;
     msgAbout = nullptr;
+}
+
+void MainWindow::onGetCurrentTheme()
+{
+    auto theme = getSetting("theme");
+    emit currentTheme(theme);
 }
 
 void MainWindow::onGetThemesList()
@@ -499,7 +511,7 @@ void MainWindow::slotDelayTimer()
 
 void MainWindow::tweakUi()
 {
-    QString theme = getSetting("theme");
+    auto theme = getSetting("theme");
 
     // first run of app, or user rm's config file, or delete's line in config
     if (theme.isEmpty())

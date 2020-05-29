@@ -29,9 +29,11 @@ public:
     ~MainWindow();
 
 public slots:
+    void onGetCurrentTheme();
     void onGetThemesList();
 
 signals:
+    void currentTheme(QString theme);
     void sendThemesList(QStringList cssStylesList);
 
 private:
