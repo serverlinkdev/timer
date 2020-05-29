@@ -1,15 +1,26 @@
 #include "themepicker.h"
-#include <QPushButton>
-#include <QVBoxLayout>
 #include <QDebug>
+#include <QLabel>
 
 ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
 {
     setWindowTitle("Theme Picker");
 
-    auto *layout = new QVBoxLayout(this);
+    lbl = new QLabel(this);
+    lbl->setText("Please choose a color theme.\n\n"
+                 "All changes are immediately saved\n");
+
     box = new QComboBox(this);
+
+    btn = new QDialogButtonBox(QDialogButtonBox::Ok);
+    layout = new QVBoxLayout(this);
+    connect(btn, &QDialogButtonBox::accepted,
+            [=](){hide();});
+
+    layout->addWidget(lbl);
     layout->addWidget(box);
+    layout->addWidget(btn);
+
     setLayout(layout);
 
     connect(box, QOverload<int>::of(&QComboBox::activated),
@@ -49,4 +60,8 @@ void ThemePicker::showEvent(QShowEvent *event)
 
 ThemePicker::~ThemePicker()
 {
+    delete btn;
+    delete box;
+    delete lbl;
+    delete layout;
 }

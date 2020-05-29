@@ -3,7 +3,10 @@
 
 #include <QComboBox>
 #include <QDialog>
+#include <QDialogButtonBox>
+#include <QLabel>
 #include <QObject>
+#include <QVBoxLayout>
 
 class ThemePicker : public QDialog
 {
@@ -20,7 +23,11 @@ public slots:
     void onSendThemesList(QStringList cssStylesList);
 
 private:
+    QLabel *lbl = nullptr;
     QComboBox *box = nullptr;
+    QDialogButtonBox *btn = nullptr;
+    QVBoxLayout *layout = nullptr;
+
     void populateCombobox(QStringList cssStylesList);
     void onComboBoxItemActivated();
 
