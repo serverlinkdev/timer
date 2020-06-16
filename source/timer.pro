@@ -35,6 +35,12 @@ HEADERS += \
         soundpicker.h \
         themepicker.h
 
+win32{
+LIBS += -lKernel32
+LIBS += -lUser32
+LIBS += -lGdi32
+}
+
 FORMS += \
         mainwindow.ui \
         soundpicker.ui

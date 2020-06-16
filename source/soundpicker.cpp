@@ -81,18 +81,14 @@ void SoundPicker::on_pbBrowse_clicked()
     if (!soundFileLocationDone)
     {
         auto initialPath =
-                QStandardPaths::writableLocation(
-                    QStandardPaths::MusicLocation);
+                QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
 
         if (initialPath.isEmpty()) initialPath = QDir::currentPath();
 
         auto soundFileLocation =
-                QFileDialog::getOpenFileName(this,
-                                             "Pick sound file",
-                                             initialPath,
-                                             0,
-                                             0,
-                                             QFileDialog::DontUseNativeDialog);
+                QFileDialog::getOpenFileName(
+                    this, "Pick sound file", initialPath,
+                    0, 0, QFileDialog::DontUseNativeDialog);
 
         // user pressed esc when file dialog open so as to cancel,
         // or select file then click cancel in file picker is here as well
@@ -160,10 +156,8 @@ SoundPicker::~SoundPicker()
 
 void SoundPicker::writeSettings(const QString &key, const QString &value)
 {
-    QSettings settings(QSettings::IniFormat,
-                       QSettings::UserScope,
-                       publisher,
-                       appName);
+    QSettings settings(
+        QSettings::IniFormat, QSettings::UserScope, publisher, appName);
 
     settings.setValue(key, value);
 }

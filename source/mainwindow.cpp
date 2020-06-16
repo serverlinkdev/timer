@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include <QDateTime>
 #include <QDirIterator>
 #include <QEvent>
@@ -13,32 +14,34 @@
 
 #include <QDebug>
 
+#ifdef WIN32
+#include "Windows.h"
+#include "WinUser.h"
+#include "wingdi.h"
+#endif
 
-MainWindow::MainWindow(const QString &configFile,
-                       const QString &publisher,
-                       const QString &appName,
-                       QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    configFile(configFile),
-    publisher(publisher),
-    appName(appName),
-    isRunning(false),
-    mainwindowHeight(280),
-    mainwindowWidth(177),
-    factorySoundFile("qrc:/sound/pop.wav")
+MainWindow::MainWindow(
+    const QString &configFile, const QString &publisher, const QString &appName,
+    QWidget *parent) :
+        QMainWindow(parent),
+        ui(new Ui::MainWindow),
+        configFile(configFile),
+        publisher(publisher),
+        appName(appName),
+        isRunning(false),
+        mainwindowHeight(280),
+        mainwindowWidth(177),
+        factorySoundFile("qrc:/sound/pop.wav")
 {
 //    createPalette();
     createActions();
     createTrayIcon();
-
     createDelayTimer();
     createPlayer();
     setUserCssStyleSheet();
     createThemePicker();
     createSoundFilePicker();
     ui->setupUi(this);
-
     tweakUi();
     tweakWindowFlags();
 }
@@ -91,10 +94,8 @@ void MainWindow::createActions()
 void MainWindow::createDelayTimer()
 {
     delayTimer = new QTimer(this);
-    connect(delayTimer,
-            &QTimer::timeout,
-            this,
-            &MainWindow::slotDelayTimer,Qt::UniqueConnection);
+    connect(delayTimer, &QTimer::timeout,
+            this, &MainWindow::slotDelayTimer,Qt::UniqueConnection);
 }
 
 void MainWindow::createPalette()
@@ -157,22 +158,6 @@ void MainWindow::createSoundFilePicker()
 
     connect(soundPicker, &SoundPicker::soundFileChanged,
             this, &MainWindow::changePlaylist);
-}
-
-void MainWindow::setUserCssStyleSheet()
-{
-    auto theme = getSetting("theme");
-
-    // first run of app, or user rm's config file, or delete's line in config
-    if (theme.isEmpty())
-    {
-        theme = "Dark";
-        setCssStyleSheet("Dark");
-    }
-    else
-    {
-        setCssStyleSheet(theme);
-    }
 }
 
 void MainWindow::createThemePicker()
@@ -245,13 +230,24 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 
 QString MainWindow::getSetting(const QString &someSetting) const
 {
-    QSettings settings(QSettings::IniFormat,
-                       QSettings::UserScope,
-                       publisher,
-                       appName);
+    QSettings settings(
+        QSettings::IniFormat, QSettings::UserScope, publisher, appName);
 
     return settings.value(someSetting).toString();
 }
+
+#ifdef WIN32
+QString MainWindow::getWindowsFontFamily()
+{
+    NONCLIENTMETRICS metrics;
+    metrics.cbSize = sizeof(NONCLIENTMETRICS);
+    SystemParametersInfo(
+        SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &metrics, 0);
+    auto mystring = &metrics.lfMessageFont.lfFaceName;
+
+    return QString::fromStdWString(*mystring);
+}
+#endif
 
 void MainWindow::hideMainWindow()
 {
@@ -499,13 +495,15 @@ void MainWindow::setCssStyleSheet(const QString &themeName)
     auto size = font.pointSize();
     auto fontSize = QString::number(size,10);
     auto unit = "pt";
+    auto fontFamily = font.family();
 #ifdef WIN32
     // windows uses really small fonts by default
-    fontSize = "18"; // px for windows
-    unit = "px";
+    fontSize = "18";
+    unit = "px"; // px for Windows fonts not jagged this way
+    // Win10 users who edit their registry to get custom fonts the old
+    // pre-Win10 way which MS hides now but works with 'advchange' app
+    fontFamily = getWindowsFontFamily();
 #endif
-
-    auto fontFamily = font.family();
 
     auto prepend = "* {font-family: " + fontFamily + ";"
                    "font-size: " + fontSize + unit + ";}";
@@ -521,6 +519,22 @@ void MainWindow::setIcon(QIcon icon)
 {
     trayIcon->setIcon(icon);
     setWindowIcon(icon);
+}
+
+void MainWindow::setUserCssStyleSheet()
+{
+    auto theme = getSetting("theme");
+
+    // first run of app, or user rm's config file, or delete's line in config
+    if (theme.isEmpty())
+    {
+        theme = "Dark";
+        setCssStyleSheet("Dark");
+    }
+    else
+    {
+        setCssStyleSheet(theme);
+    }
 }
 
 void MainWindow::showAndSetActive()
@@ -589,11 +603,11 @@ void MainWindow::updateMainwindowMemberVars()
 
 void MainWindow::writeSettings(const QString &key, const QString &value)
 {
-    QSettings settings(QSettings::IniFormat,
-                       QSettings::UserScope,
-                       publisher,
-                       appName);
+    QSettings settings(
+        QSettings::IniFormat, QSettings::UserScope, publisher, appName);
 
     return settings.setValue(key, value);
 }
+
+
 

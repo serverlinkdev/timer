@@ -22,10 +22,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const QString &configFile,
-                        const QString &publisher,
-                        const QString &appName,
-                        QWidget *parent = nullptr);
+    explicit MainWindow(
+        const QString &configFile, const QString &publisher,
+        const QString &appName, QWidget *parent = nullptr);
+
     ~MainWindow();
 
 public slots:
@@ -52,7 +52,9 @@ private:
     QString getSetting(const QString &someSetting) const;
     void writeSettings(const QString &key,
                        const QString &value);
-
+#ifdef WIN32
+    QString getWindowsFontFamily();
+#endif
     void setUserCssStyleSheet();
     void setCssStyleSheet(const QString &themeName);
     void createPalette();

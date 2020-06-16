@@ -71,10 +71,6 @@ void ThemePicker::showEvent(QShowEvent *event)
 
 ThemePicker::~ThemePicker()
 {
-    delete layout;
-    delete btn;
-    delete spacer;
-    delete box;
-    delete lbl;
+    deleteLater();
 }
 
