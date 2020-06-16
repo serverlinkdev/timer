@@ -11,6 +11,9 @@
 #include <QTime>
 #include <QUrl>
 
+#include <QDebug>
+
+
 MainWindow::MainWindow(const QString &configFile,
                        const QString &publisher,
                        const QString &appName,
@@ -31,15 +34,13 @@ MainWindow::MainWindow(const QString &configFile,
 
     createDelayTimer();
     createPlayer();
+    setUserCssStyleSheet();
     createThemePicker();
     createSoundFilePicker();
     ui->setupUi(this);
 
     tweakUi();
     tweakWindowFlags();
-
-    //TODO
-    onThemePickerClicked();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -156,6 +157,22 @@ void MainWindow::createSoundFilePicker()
 
     connect(soundPicker, &SoundPicker::soundFileChanged,
             this, &MainWindow::changePlaylist);
+}
+
+void MainWindow::setUserCssStyleSheet()
+{
+    auto theme = getSetting("theme");
+
+    // first run of app, or user rm's config file, or delete's line in config
+    if (theme.isEmpty())
+    {
+        theme = "Dark";
+        setCssStyleSheet("Dark");
+    }
+    else
+    {
+        setCssStyleSheet(theme);
+    }
 }
 
 void MainWindow::createThemePicker()
@@ -472,8 +489,31 @@ void MainWindow::setCssStyleSheet(const QString &themeName)
 {
     QFile file(":/qss/" + themeName + ".qss");
     file.open(QFile::ReadOnly);
-    auto cssStyleSheet = QString::fromLatin1(file.readAll());
+    auto sheet = QString::fromLatin1(file.readAll());
+
+    // On GNU/Linux Qt's font detection *AND* inheritance is broken
+    // let's take a hammer to it (Qt 5.14 and up is fine, btw).
+    // TODO in 2025 do we still need this? Has GNU ecosystem progressed
+    // that we don't need this?
+    auto font = property("font").value<QFont>();
+    auto size = font.pointSize();
+    auto fontSize = QString::number(size,10);
+    auto unit = "pt";
+#ifdef WIN32
+    // windows uses really small fonts by default
+    fontSize = "18"; // px for windows
+    unit = "px";
+#endif
+
+    auto fontFamily = font.family();
+
+    auto prepend = "* {font-family: " + fontFamily + ";"
+                   "font-size: " + fontSize + unit + ";}";
+
+    auto cssStyleSheet = prepend + sheet;
+
     qApp->setStyleSheet(cssStyleSheet);
+
     writeSettings("theme", themeName);
 }
 
@@ -511,19 +551,6 @@ void MainWindow::slotDelayTimer()
 
 void MainWindow::tweakUi()
 {
-    auto theme = getSetting("theme");
-
-    // first run of app, or user rm's config file, or delete's line in config
-    if (theme.isEmpty())
-    {
-        theme = "Dark";
-        setCssStyleSheet("Dark");
-    }
-    else
-    {
-        setCssStyleSheet(theme);
-    }
-
     ui->lblStatus->setText("Habouji!");
     setButtonHoverColor(green);
 

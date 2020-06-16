@@ -53,6 +53,7 @@ private:
     void writeSettings(const QString &key,
                        const QString &value);
 
+    void setUserCssStyleSheet();
     void setCssStyleSheet(const QString &themeName);
     void createPalette();
 
@@ -95,6 +96,7 @@ private:
     void createSoundFilePicker();
     SoundPicker *soundPicker = nullptr;
     QMenu *contextMenu = nullptr;
+
 
 private slots:
     void slotDelayTimer();
