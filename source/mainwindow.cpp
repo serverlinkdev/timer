@@ -8,6 +8,7 @@
 #include <QMediaPlaylist>
 #include <QMenu>
 #include <QMessageBox>
+#include <QScreen>
 #include <QSettings>
 #include <QTime>
 #include <QUrl>
@@ -44,6 +45,17 @@ MainWindow::MainWindow(
     ui->setupUi(this);
     tweakUi();
     tweakWindowFlags();
+
+    // linux box window managers do not center on open. sometimes title bar
+    // is off screen so brute force this.
+    int screenWidth = QGuiApplication::screens().first()->geometry().width();
+    int screenHeight = QGuiApplication::screens().first()->geometry().height();
+    setGeometry(
+        (screenWidth/2)-(width()/2), (screenHeight/2)-(height()/2),
+            width(), height());
+    // despite the window not shown on startup, calling this sets more vars
+    // needed to center the window
+    hideMainWindow();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
