@@ -9,12 +9,12 @@
 
 ![](screenshot-tooltip.png)
 
-A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.99 released on 7/16/20
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current released version is 1.9.0 released on 7/16/20
 
 Now with Slackware Linux support! Hail Bob!
 
 ## Features:
-+ Respects your Freedom a.ka. GPL V 3.0 licensed - True "open source" software with *NO* hidden gotchas!
++ Respects your Freedom a.k.a. GPL V 3.0 licensed - True "open source" software with *NO* hidden gotchas!
 
 + Respects your privacy - There is *NO* telemetry data collected, reported in any way.
 
@@ -62,7 +62,8 @@ C:\Documents and Settings\<username>\Start Menu\Programs\Your Application
 ```
 
 ### Slackware Linux:
-1. Please see the gnu subfolder.  Buildscripts and dependencies from Alien Bob are included for your use, targeting 14.2.  If ever issues on --current, let me know.  Slackware will be supported as long as I hold breath!
+1. Please see the gnu subfolder.  Buildscripts and dependencies from Alien Bob are included for your use, targeting 14.2.  Also be sure to have a look at the src/doc/gnu/tips.txt file as well. If ever issues on --current, let me know.  Slackware will be supported as long as I hold breath!
+
 
 
 ### Other GNU/Linux:
