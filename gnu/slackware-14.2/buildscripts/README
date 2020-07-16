@@ -1,0 +1,69 @@
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows
+Operating Systems, licensed under the GPL V 3.0.
+
+
+Homepage: https://github.com/serverlinkdev/timer
+
+
+Dependencies:
+-------------
+http://www.slackware.com/~alien/slackbuilds/libinput/
+libinput-1.7.3-x86_64-1alien.txz
+
+http://www.slackware.com/~alien/slackbuilds/libxkbcommon/
+libxkbcommon-0.8.2-x86_64-1alien.txz
+
+http://www.slackware.com/~alien/slackbuilds/qt5/
+qt5-5.9.6-x86_64-1alien.txz
+
+
+Optional Dependencies (see notes below):
+----------------------------------------
+http://slackbuilds.org/repository/14.2/libraries/qt5-styleplugins/
+
+
+Install Dep's:
+--------------
+upgradepkg --install-new *txz
+
+
+KDE Users:
+----------
+Typically you will NOT want the qt5-styleplugins (even if timer isn't installed)
+on your system as that will supercede KDE's settings.  Even having the qt5ct
+commented out in .bashrc is not enough.
+
+
+XFCE/Box Window Manager Users:
+------------------------------
+(1) If you want to us the inbuilt themes of Timer, you need not do anything
+special. Just select an apropriate theme from the wizard invoked by the system
+tray icon menu. Profit!
+
+(2) If you want to use native theming from XFCE:
+
+(a) You will want to install the:
+        http://slackbuilds.org/repository/14.2/libraries/qt5-styleplugins/
+
+(b) edit your ~/.bashrc file with:
+        QT_QPA_PLATFORMTHEME=qt5ct
+
+(c) log in/out of desktop session.
+
+(d) execute 'qt5ct' from terminal and select gtk2 style.
+
+Now Timer will inherit theme changes from qt5ct and use the same theming as
+your XFCE desktop environment.
+
+
+Tips:
+-----
+Slackware includes many sound files in /usr/share/sounds if you do not like
+the inbuilt pop.wav sound.
+
+
+Timer.info:
+-----------
+I have to upload sources to github for the sourcepkg to be made by github.
+So the md5 sum might not be correct, I will have to do two commits so as
+to get that number and modify accordingly.  chicken <-> egg :)

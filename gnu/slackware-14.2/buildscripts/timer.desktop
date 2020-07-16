@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Timer
+Comment=A simple timer application
+GenericName=Timer
+Exec=/opt/timer/bin/timer
+Icon=/usr/share/pixmaps/stopwatch32.png
+Terminal=false
+StartupNotify=false
+Type=Application
+Categories=Qt;KDE;Utility;
