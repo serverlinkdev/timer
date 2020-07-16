@@ -6,12 +6,12 @@ ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
 {
     setWindowTitle("Theme Picker");
 
-    lbl = new QLabel(this);
-    lbl->setText("Please choose a color theme.\n\n"
-                 "All changes are immediately\n"
-                 "applied and saved\n");
+    lbl = new QLabel(
+                "Please choose a color theme.\n\n"
+                "All changes are immediately\n"
+                "applied and saved\n");
 
-    box = new QComboBox(this);
+    box = new QComboBox();
     connect(box, QOverload<int>::of(&QComboBox::activated),
             this, &ThemePicker::onComboBoxItemActivated);
 
@@ -21,7 +21,7 @@ ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
     connect(btn, &QDialogButtonBox::accepted,
             [=](){hide();});
 
-    layout = new QVBoxLayout(this);
+    layout = new QVBoxLayout();
     layout->addWidget(lbl);
     layout->addWidget(box);
     layout->addSpacerItem(spacer);
@@ -71,6 +71,5 @@ void ThemePicker::showEvent(QShowEvent *event)
 
 ThemePicker::~ThemePicker()
 {
-    deleteLater();
 }
 
