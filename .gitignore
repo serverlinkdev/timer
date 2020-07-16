@@ -10,3 +10,4 @@ build/
 hs_err_pid*
 keystore.jks
 *.pro.user
+README.md.backup
