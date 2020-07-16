@@ -4,7 +4,7 @@
 # No license for this buildscript, public domain
 
 PRGNAM=timer
-VERSION=${VERSION:-1.9.9}
+VERSION=${VERSION:-2.0.0}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 
