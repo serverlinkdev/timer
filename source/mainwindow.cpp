@@ -296,20 +296,7 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 MainWindow::~MainWindow()
 {
-    delete themePicker;
-    delete soundPicker;
-    delete delayTimer;
-    delete playlist;
-    delete player;
     delete ui;
-    delete aboutAction;
-    delete soundAction;
-    delete hideAction;
-    delete restoreAction;
-    delete stopAction;
-    delete quitAction;
-    delete trayIconMenu;
-    delete trayIcon;
 }
 
 // NOTE: MS Windows requires that if the pop up is activated, and a user
