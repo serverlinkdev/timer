@@ -13,8 +13,6 @@
 #include <QTime>
 #include <QUrl>
 
-#include <QDebug>
-
 #ifdef WIN32
 #include "Windows.h"
 #include "WinUser.h"

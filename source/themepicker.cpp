@@ -1,5 +1,4 @@
 #include "themepicker.h"
-#include <QDebug>
 #include <QLabel>
 
 ThemePicker::ThemePicker(QDialog *parent) : QDialog (parent)
