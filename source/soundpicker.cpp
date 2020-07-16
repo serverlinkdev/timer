@@ -150,8 +150,6 @@ void SoundPicker::resetMemberVarsForNextRun()
 
 SoundPicker::~SoundPicker()
 {
-    disconnect();
-    delete ui;
 }
 
 void SoundPicker::writeSettings(const QString &key, const QString &value)
