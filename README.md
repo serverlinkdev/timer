@@ -1,17 +1,17 @@
 # Timer
 ![](timer.gif)
 
-![](about.png)
+![](theme-picker-demo.gif)
 
-![](screenshot.png)
+![](about.png) 
 
 ![](screenshot-notification.png)
 
-![](wizard.png)
-
 ![](screenshot-tooltip.png)
 
-A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.90 released on 5/22/20.
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current version is 1.99 released on 7/16/20
+
+Now with Slackware Linux support! Hail Bob!
 
 ## Features:
 + Respects your Freedom a.ka. GPL V 3.0 licensed - True "open source" software with *NO* hidden gotchas!
@@ -29,15 +29,16 @@ A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Op
 	4. Press enter to start the timer (or click the start button - optional)
 	
 + Full system tray support for GNU/Linux and MS Windows supporting:
-  - Application minimizes to the system tray on startup and gives a nice notification.
-  - Start button becomes Stop button when timer is activated and vice versa.
-  - Close program window minimizes to tray
-  - Single click minimizes AND restores from tray
-  - Cancel alarm from tray
-  - Quit timer from tray
+  - Minimize to the system tray on startup with a nice notification.
+  - Intuitive hover effects: "Start" button becomes "Stop" button when timer is activated and vice versa.
+  - Always a click away: Minimize minimizes to tray when main window closed.
+  - Single click minimizes AND restores from tray.
+  - Cancel alarm from tray.
+  - Quit program from tray.
   - Tooltip on tray icon to easily identify a timer from multiple instances.
   - Tray icon changes color to green when running, and red when timer has expired.
   - Ability to pick your own sound files from a sound file picker wizard in the tray menu.
+  - Theming support: pick one of numerous dark themes (or none).
  
 + System notifications that shows your custom message and allow you to cancel the alarm from the notification.
 
@@ -60,8 +61,14 @@ Also, you can place a shortcut to timer.exe in your Start Menu with:
 C:\Documents and Settings\<username>\Start Menu\Programs\Your Application
 ```
 
-### GNU Linux:
-1. You know what to do :) But if you don't contact me if you need a binary build for your distro and I'll gladly build one for you.  In time I might write some Slackware, Arch and Debian build scripts; or make packages and sign them and put in releases folder.  If you would like to submit a build script for consideration please contact me at the email address shown in the section below.
+### Slackware Linux:
+1. Please see the gnu subfolder.  Buildscripts and dependencies from Alien Bob are included for your use, targeting 14.2.  If ever issues on --current, let me know.  Slackware will be supported as long as I hold breath!
+
+
+### Other GNU/Linux:
+- Ubuntu 18.04 will be supported until the end of its HWE lifecycle (~2023) is my intention.
+- Other GNU/Linux flavors: if you submit buildscripts I'll gladly test and include :)
+
 
 ### Source Build:
 1. GNU/Linux users: Easiest way is to open the pro file with QtCreator and run the build.  Be sure to set the build to 'release' so you your binary will be smaller.  This will auto build a shared library binary, so you only need the file 'timer' and put it anywhere on your system.  You'll probably be happiest if it's in your ~/bin directory.
@@ -70,7 +77,7 @@ C:\Documents and Settings\<username>\Start Menu\Programs\Your Application
 Timer is very stable. There are no known show stopper bugs at this time.  Should you find any please report to the email address shown in section below.
 
 ### Development:
-Feature's are complete and I don't intend to add anything to Timer.  But I do keep an open mind.  So if there is some feature that you'd like to see that would benefit others as well, you may contact me at the email address show in section below.
+Feature's are complete for the most part.  I might refactor to make the application more approachable for those that are new to Qt or want to volunteer.  I do keep an open mind, so if there is some feature that you'd like to see that would benefit others as well, you may contact me at the email address show in section below.
 
 ### Habouji ? What's that mean?:
 This is a greeting in the "Nali" language from my favorite video game, Unreal Tournament.
