@@ -1,0 +1,32 @@
+KDE Users:
+----------
+Typically you will NOT want the qt5-styleplugins (even if timer isn't installed)
+on your system as that will supercede KDE's settings.  Even having the qt5ct
+commented out in .bashrc is not enough.
+
+
+XFCE/Box Window Manager Users:
+------------------------------
+(1) If you want to us the inbuilt themes of Timer, you need not do anything
+special. Just select an apropriate theme from the wizard invoked by the system
+tray icon menu. Profit!
+
+(2) If you want to use native theming from XFCE:
+
+(a) You will want to install the qt5-styleplugins package.
+
+(b) edit your ~/.bashrc file with:
+        QT_QPA_PLATFORMTHEME=qt5ct
+
+(c) log in/out of desktop session.
+
+(d) execute 'qt5ct' from terminal and select gtk2 style.
+
+Now Timer will inherit theme changes from qt5ct and use the same theming as
+your XFCE desktop environment.
+
+
+General:
+--------
+Slackware includes many sound files in /usr/share/sounds if you do not like
+the inbuilt pop.wav sound.
