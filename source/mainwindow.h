@@ -57,7 +57,6 @@ private:
 #endif
     void setUserCssStyleSheet();
     void setCssStyleSheet(const QString &themeName);
-    void createPalette();
 
     void createDelayTimer();
     QTimer *delayTimer=nullptr;

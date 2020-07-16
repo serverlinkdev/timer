@@ -34,7 +34,6 @@ MainWindow::MainWindow(
         mainwindowWidth(177),
         factorySoundFile("qrc:/sound/pop.wav")
 {
-//    createPalette();
     createActions();
     createTrayIcon();
     createDelayTimer();
@@ -108,31 +107,6 @@ void MainWindow::createDelayTimer()
     delayTimer = new QTimer(this);
     connect(delayTimer, &QTimer::timeout,
             this, &MainWindow::slotDelayTimer,Qt::UniqueConnection);
-}
-
-void MainWindow::createPalette()
-{
-    QPalette palette = this->palette();
-    palette.setColor(QPalette::Window, QColor(54,57,63));
-
-    palette.setColor(QPalette::WindowText, Qt::white);
-
-    // this item has inconsistent behavior tween 5.12 and 5.14.  lesser of two
-    // evils is to set this here and set stylesheet special for the tray
-    // this is the hover color of items in the menu
-    palette.setColor(QPalette::Base, QColor(33,33,33));
-
-    // the trays normal text color
-    palette.setColor(QPalette::Text, Qt::white);
-
-    // the trays disabled text color
-    palette.setColor(QPalette::Disabled, QPalette::Text, QColor("#474747"));
-
-    // mouse over of items in tray, and also highlighted text on mainwindow
-    palette.setColor(QPalette::Highlight, QColor("#727272"));
-    palette.setColor(QPalette::HighlightedText, QColor(33,33,33));
-
-    QApplication::setPalette(palette);
 }
 
 void MainWindow::createPlayer()
