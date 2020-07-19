@@ -1,13 +1,13 @@
 # Timer
-![](images/timer.gif)
+![](images-md/timer.gif)
 
-![](theme-picker-demo.gif)
+![](images-md/theme-picker-demo.gif)
 
-![](about.png) 
+![](images-md/about.png) 
 
-![](screenshot-notification.png)
+![](images-md/screenshot-notification.png)
 
-![](screenshot-tooltip.png)
+![](images-md/screenshot-tooltip.png)
 
 A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current released version is 2.0.4
 
