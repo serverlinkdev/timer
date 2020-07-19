@@ -1,5 +1,5 @@
 # Timer
-![](timer.gif)
+![](images/timer.gif)
 
 ![](theme-picker-demo.gif)
 
@@ -9,7 +9,7 @@
 
 ![](screenshot-tooltip.png)
 
-A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current released version is 1.9.0 for Windows and version 2.0.2 for GNU/Linux released on 7/16/20.  Version 2.0.2 only includes build fixes for Slackware Linux.
+A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current released version is 2.0.4
 
 Now with Slackware Linux support! Hail Bob!
 
