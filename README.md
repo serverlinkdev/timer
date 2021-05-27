@@ -9,6 +9,8 @@
 
 ![](images-md/screenshot-tooltip.png)
 
+For support, you can join my discord channel at https://discord.gg/XZUrutUEpn
+
 A simple timer application written in C++/Qt for the GNU/Linux and MS Windows Operating System, licensed under the GPL V 3.0.  The current released version is 2.0.4
 
 Now with Slackware Linux support! Hail Bob!
